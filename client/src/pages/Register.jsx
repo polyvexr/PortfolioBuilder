@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../context/AuthContext';
-import { User, Mail, Lock, Loader2, AlertCircle, AtSign, X } from 'lucide-react';
+import { User, Mail, Lock, Loader2, AlertCircle, AtSign, X, Layers } from 'lucide-react';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -82,42 +82,48 @@ const Register = () => {
     <div className="fixed inset-0 z-[100] flex items-center justify-center">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"
         onClick={() => setShowRegisterModal(false)}
       />
 
       {/* Modal */}
-      <div className="relative z-10 w-full max-w-md mx-4 animate-[modalIn_0.25s_ease-out]">
-        <div className="glass-card-dark py-8 px-4 shadow-2xl rounded-[2rem] sm:px-10 relative">
+      <div className="relative z-10 w-full max-w-md mx-4 animate-[modalIn_0.25s_ease-out] my-8 max-h-[90vh] overflow-y-auto custom-scrollbar">
+        <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 py-8 px-6 shadow-2xl rounded-2xl sm:px-10 relative">
+          
           {/* Close button */}
           <button
             onClick={() => setShowRegisterModal(false)}
-            className="absolute top-4 right-4 p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-all"
+            className="absolute top-4 right-4 p-2 rounded-xl text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-900 transition-all cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
 
-          <form className="space-y-5" onSubmit={handleSubmit}>
+          <form className="space-y-4" onSubmit={handleSubmit}>
+            
+            {/* Logo */}
             <div className="flex justify-center items-center gap-2">
-              <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center font-bold text-white shadow-lg shadow-indigo-500/20">BYP</div>
-              <span className="text-2xl font-bold text-white tracking-tight font-outfit">Build Your Portfolio</span>
+              <div className="w-8 h-8 rounded-lg bg-slate-950 dark:bg-white flex items-center justify-center text-white dark:text-slate-950">
+                <Layers className="w-4 h-4 text-emerald-500" />
+              </div>
+              <span className="text-lg font-bold text-slate-950 dark:text-white tracking-tight font-outfit">PortfolioBuilder</span>
             </div>
-            <h2 className="text-center text-3xl font-extrabold text-white font-outfit">Create your account</h2>
+
+            <h2 className="text-center text-xl font-extrabold text-slate-950 dark:text-white font-outfit">Create your account</h2>
 
             {error && (
-              <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-                <p className="text-sm text-red-200">{error}</p>
+              <div className="bg-rose-500/10 border border-rose-500/20 rounded-xl p-3.5 flex items-start gap-3">
+                <AlertCircle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
+                <p className="text-xs font-semibold text-rose-600 dark:text-rose-400">{error}</p>
               </div>
             )}
 
             <div>
-              <label htmlFor="reg-name" className="block text-sm font-medium text-slate-300 pl-1">
+              <label htmlFor="reg-name" className="block text-xs font-bold text-slate-500 dark:text-slate-400 pl-1 mb-1">
                 Full Name
               </label>
-              <div className="mt-1 relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <User className="h-5 h-5 text-slate-500" />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <User className="h-4 h-4 text-slate-450 dark:text-slate-500" />
                 </div>
                 <input
                   id="reg-name"
@@ -126,19 +132,19 @@ const Register = () => {
                   required
                   value={formData.name}
                   onChange={handleChange}
-                  className="appearance-none block w-full pl-11 pr-3 py-3 border border-white/10 rounded-2xl bg-white/5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all sm:text-sm hover:border-white/20"
+                  className="appearance-none block w-full pl-10 pr-3 py-2 border border-slate-200 dark:border-slate-800 rounded-xl bg-transparent text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-emerald-500 dark:focus:border-emerald-500 transition-all text-xs"
                   placeholder="John Doe"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="reg-username" className="block text-sm font-medium text-slate-300 pl-1">
+              <label htmlFor="reg-username" className="block text-xs font-bold text-slate-500 dark:text-slate-400 pl-1 mb-1">
                 Username
               </label>
-              <div className="mt-1 relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <AtSign className="h-5 h-5 text-slate-500" />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <AtSign className="h-4 h-4 text-slate-450 dark:text-slate-500" />
                 </div>
                 <input
                   id="reg-username"
@@ -147,19 +153,19 @@ const Register = () => {
                   required
                   value={formData.username}
                   onChange={handleChange}
-                  className="appearance-none block w-full pl-11 pr-3 py-3 border border-white/10 rounded-2xl bg-white/5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all sm:text-sm hover:border-white/20"
+                  className="appearance-none block w-full pl-10 pr-3 py-2 border border-slate-200 dark:border-slate-800 rounded-xl bg-transparent text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-emerald-500 dark:focus:border-emerald-500 transition-all text-xs"
                   placeholder="johndoe"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="reg-email" className="block text-sm font-medium text-slate-300 pl-1">
+              <label htmlFor="reg-email" className="block text-xs font-bold text-slate-500 dark:text-slate-400 pl-1 mb-1">
                 Email address
               </label>
-              <div className="mt-1 relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Mail className="h-5 h-5 text-slate-500" />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <Mail className="h-4 h-4 text-slate-450 dark:text-slate-500" />
                 </div>
                 <input
                   id="reg-email"
@@ -168,19 +174,19 @@ const Register = () => {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="appearance-none block w-full pl-11 pr-3 py-3 border border-white/10 rounded-2xl bg-white/5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all sm:text-sm hover:border-white/20"
+                  className="appearance-none block w-full pl-10 pr-3 py-2 border border-slate-200 dark:border-slate-800 rounded-xl bg-transparent text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-emerald-500 dark:focus:border-emerald-500 transition-all text-xs"
                   placeholder="name@example.com"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="reg-password" className="block text-sm font-medium text-slate-300 pl-1">
+              <label htmlFor="reg-password" className="block text-xs font-bold text-slate-500 dark:text-slate-400 pl-1 mb-1">
                 Password
               </label>
-              <div className="mt-1 relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Lock className="h-5 h-5 text-slate-500" />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <Lock className="h-4 h-4 text-slate-450 dark:text-slate-500" />
                 </div>
                 <input
                   id="reg-password"
@@ -189,28 +195,28 @@ const Register = () => {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="appearance-none block w-full pl-11 pr-3 py-3 border border-white/10 rounded-2xl bg-white/5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all sm:text-sm hover:border-white/20"
+                  className="appearance-none block w-full pl-10 pr-3 py-2 border border-slate-200 dark:border-slate-800 rounded-xl bg-transparent text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-emerald-500 dark:focus:border-emerald-500 transition-all text-xs"
                   placeholder="••••••••"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="reg-password" className="block text-sm font-medium text-slate-300 pl-1">
-               Confirm Password
+              <label htmlFor="reg-confirmpassword" className="block text-xs font-bold text-slate-500 dark:text-slate-400 pl-1 mb-1">
+                Confirm Password
               </label>
-              <div className="mt-1 relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Lock className="h-5 h-5 text-slate-500" />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <Lock className="h-4 h-4 text-slate-450 dark:text-slate-500" />
                 </div>
                 <input
-                  id="reg-password"
+                  id="reg-confirmpassword"
                   name="confirmpassword"
                   type="password"
                   required
                   value={formData.confirmpassword}
                   onChange={handleChange}
-                  className="appearance-none block w-full pl-11 pr-3 py-3 border border-white/10 rounded-2xl bg-white/5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all sm:text-sm hover:border-white/20"
+                  className="appearance-none block w-full pl-10 pr-3 py-2 border border-slate-200 dark:border-slate-800 rounded-xl bg-transparent text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-emerald-500 dark:focus:border-emerald-500 transition-all text-xs"
                   placeholder="••••••••"
                 />
               </div>
@@ -220,17 +226,17 @@ const Register = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-2xl shadow-lg shadow-indigo-500/20 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform active:scale-95"
+                className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-xl text-xs font-bold text-white dark:text-slate-950 bg-slate-950 dark:bg-white hover:bg-slate-850 dark:hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
               >
                 {loading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
                   'Create Account'
                 )}
               </button>
-              <p className="mt-2 text-center text-sm text-slate-400">
+              <p className="mt-3 text-center text-xs text-slate-550 dark:text-slate-400">
                 Already have an account?{' '}
-                <button type="button" onClick={switchToLogin} className="font-medium text-indigo-400 hover:text-indigo-300 transition-colors">
+                <button type="button" onClick={switchToLogin} className="font-bold text-emerald-600 dark:text-emerald-500 hover:underline cursor-pointer">
                   Sign in
                 </button>
               </p>

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowRight, 
@@ -31,9 +32,17 @@ import { useTheme } from '../context/ThemeContext';
 const LandingPage = () => {
   const { setShowRegisterModal, user } = useAuth();
   const { theme } = useTheme();
+  const navigate = useNavigate();
+
+  // Auto redirect to dashboard if logged in
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
   
   const handleModel = () => {
-    user ? (window.location.href = "/dashboard") : setShowRegisterModal(true);
+    user ? navigate("/dashboard") : setShowRegisterModal(true);
   };
 
   // Professional Professions Data

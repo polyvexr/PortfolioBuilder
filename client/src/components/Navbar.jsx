@@ -56,13 +56,6 @@ function Navbar() {
                     {user?.name?.toUpperCase()}
                   </span>
                 </div>
-                
-                <button
-                  onClick={() => navigate('/dashboard')}
-                  className="hidden sm:inline-flex items-center text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-emerald-500 transition-colors"
-                >
-                  Dashboard
-                </button>
 
                 <button 
                   onClick={handleLogout}
