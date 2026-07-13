@@ -17,7 +17,12 @@ import {
   Plus, 
   Trash2,
   Cpu,
-  Monitor
+  Monitor,
+  Terminal,
+  ChevronRight,
+  ShieldCheck,
+  Briefcase,
+  Layers
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import { useAuth } from '../context/AuthContext';
@@ -31,31 +36,43 @@ const LandingPage = () => {
     user ? (window.location.href = "/dashboard") : setShowRegisterModal(true);
   };
 
-  // Mock Showcase Data
+  // Professional Professions Data
   const professions = {
     developer: {
-      name: "Alex Rivera",
-      role: "Full Stack Engineer",
-      bio: "Crafting performant web experiences & scalable APIs. Passionate about system design & UX.",
-      skills: ["React/Next.js", "Node.js", "TypeScript", "Python", "Docker", "GraphQL", "PostgreSQL"],
-      themeColor: "from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400",
-      avatar: "AR"
+      name: "Adrian Thorne",
+      role: "Lead Software Architect",
+      company: "Stripe",
+      bio: "Designing robust API ecosystems and distributed systems. Committed to developer experience and simple code architectures.",
+      skills: ["Go", "Kubernetes", "TypeScript", "PostgreSQL", "gRPC", "Docker", "AWS"],
+      projects: [
+        { name: "SaaS Billing Engine", desc: "High throughput ledger API" },
+        { name: "Kubernetes Operator", desc: "Automated database clustering" }
+      ],
+      avatar: "AT"
     },
     designer: {
-      name: "Sophia Chen",
-      role: "Senior UI/UX Designer",
-      bio: "Creating human-centric interfaces and interactive prototypes that combine form & function.",
-      skills: ["Figma", "Design Systems", "Prototyping", "Framer", "Adobe CC", "Typography", "User Research"],
-      themeColor: "from-pink-500 to-rose-500 dark:from-pink-400 dark:to-rose-400",
-      avatar: "SC"
+      name: "Evelyn Vance",
+      role: "Design System Lead",
+      company: "Linear",
+      bio: "Crafting beautiful interfaces, accessible web design tokens, and modular components that scale.",
+      skills: ["Figma", "Tokens Studio", "Framer", "React", "Tailwind CSS", "A11y Audit", "UI Architecture"],
+      projects: [
+        { name: "Core Design Kit", desc: "Accessible component library" },
+        { name: "Figma Tokens Sync", desc: "Automated git exporter utility" }
+      ],
+      avatar: "EV"
     },
     manager: {
-      name: "Marcus Vance",
-      role: "Lead Product Manager",
-      bio: "Driving product strategy, defining roadmaps, and executing data-backed product launches.",
-      skills: ["Product Strategy", "User Analytics", "Agile/Scrum", "SQL", "A/B Testing", "Growth Loop", "Jira"],
-      themeColor: "from-emerald-500 to-teal-500 dark:from-emerald-400 dark:to-teal-400",
-      avatar: "MV"
+      name: "Marcus Drake",
+      role: "Principal Product Manager",
+      company: "Vercel",
+      bio: "Structuring product lifecycles, defining development milestones, and optimizing growth loops.",
+      skills: ["Product Strategy", "User Analytics", "Cohort Retention", "SQL", "Technical Writing", "OKR Delivery"],
+      projects: [
+        { name: "Edge Analytics Tool", desc: "Privacy-focused analytics hub" },
+        { name: "Vercel Deploy V2", desc: "Next-gen deployment flow design" }
+      ],
+      avatar: "MD"
     }
   };
 
@@ -63,7 +80,6 @@ const LandingPage = () => {
   const [interactiveSkills, setInteractiveSkills] = useState(professions[activeTab].skills);
   const [newSkillText, setNewSkillText] = useState('');
 
-  // Sync skills when profession tab changes
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     setInteractiveSkills(professions[tab].skills);
@@ -82,146 +98,147 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="min-h-screen mesh-bg text-slate-900 dark:text-slate-100 selection:bg-indigo-500/30 font-sans transition-colors duration-300">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 selection:bg-emerald-500/20 font-sans transition-colors duration-300">
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative pt-28 pb-16 lg:pt-36 lg:pb-24 overflow-hidden">
+      <section className="relative pt-24 pb-12 lg:pt-36 lg:pb-20 overflow-hidden">
         {/* Subtle grid background */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#00000005_1px,transparent_1px),linear-gradient(to_bottom,#00000005_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#ffffff02_1px,transparent_1px),linear-gradient(to_bottom,#ffffff02_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+        
+        {/* Radial highlight */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-emerald-500/5 dark:bg-emerald-500/10 blur-[120px] rounded-full pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
-          <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-            
-            {/* Left Column: Headline & Action */}
-            <div className="lg:col-span-7 text-left space-y-6">
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="space-y-4"
-              >
-                <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 dark:bg-indigo-400/10 text-indigo-700 dark:text-indigo-300 border border-indigo-500/20 backdrop-blur-md shadow-sm">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>The Standard for Modern Developers & Designers</span>
-                </div>
-                
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] font-outfit text-slate-950 dark:text-white">
-                  Build a <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent">Premium Portfolio</span> in Minutes.
-                </h1>
-                
-                <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl font-medium">
-                  Say goodbye to generic builders. Fill in your achievements, customize layout options, and instantly deploy a fast, beautifully designed showcase for recruiters.
-                </p>
-              </motion.div>
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10 text-center space-y-8">
+          
+          {/* Subtle Tagline */}
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800/80 shadow-sm">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-500" />
+            <span>Developer-focused design system. No templates, just layout rules.</span>
+          </div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.15 }}
-                className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2"
-              >
-                <button 
-                  onClick={handleModel} 
-                  className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold rounded-full text-white bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] transition-all shadow-xl shadow-indigo-500/25 dark:shadow-indigo-500/15 group cursor-pointer"
-                >
-                  Start Building Free
-                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </button>
-                <a 
-                  href="#features" 
-                  className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold rounded-full border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/5 active:scale-[0.98] transition-all cursor-pointer"
-                >
-                  Explore Features
-                </a>
-              </motion.div>
+          {/* Headline */}
+          <div className="max-w-4xl mx-auto space-y-4">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight font-outfit text-slate-950 dark:text-white leading-[1.08]">
+              Your portfolio represents you. <br />
+              <span className="text-emerald-600 dark:text-emerald-500">Make it look professional.</span>
+            </h1>
+            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
+              No flashy widgets or unreadable layouts. Build a clean, structured digital resume configured with lightning-fast load times and clean typography.
+            </p>
+          </div>
 
-              {/* Mini Stats Banner */}
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                className="grid grid-cols-3 gap-6 pt-6 border-t border-slate-200 dark:border-slate-800 max-w-md"
-              >
-                <div>
-                  <div className="text-2xl font-bold text-slate-900 dark:text-white font-outfit">100%</div>
-                  <div className="text-xs text-slate-500 font-medium">Recruiter Ready</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-slate-900 dark:text-white font-outfit">&lt; 3ms</div>
-                  <div className="text-xs text-slate-500 font-medium">Load Speeds</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-slate-900 dark:text-white font-outfit">3+</div>
-                  <div className="text-xs text-slate-500 font-medium">Layout Styles</div>
-                </div>
-              </motion.div>
-            </div>
+          {/* CTA Group */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5">
+            <button 
+              onClick={handleModel} 
+              className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3 text-sm font-bold rounded-xl text-white dark:text-slate-950 bg-slate-950 dark:bg-white hover:bg-slate-850 dark:hover:bg-slate-100 active:scale-[0.98] transition-all cursor-pointer shadow-sm"
+            >
+              Start Customizing
+              <ArrowRight className="ml-2 w-4 h-4 text-emerald-500 dark:text-emerald-600" />
+            </button>
+            <a 
+              href="#features" 
+              className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3 text-sm font-bold rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors cursor-pointer"
+            >
+              How It Works
+            </a>
+          </div>
 
-            {/* Right Column: Interactive Live Preview Container */}
-            <div className="lg:col-span-5 relative">
-              <div className="absolute -inset-1 rounded-[2.5rem] bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 opacity-20 blur-xl dark:opacity-30" />
+          {/* New Workspace-style Interactive Hero Mockup */}
+          <div className="max-w-5xl mx-auto pt-8">
+            <div className="border border-slate-200 dark:border-slate-800/80 rounded-[1.5rem] bg-white dark:bg-slate-950 shadow-xl overflow-hidden text-left grid md:grid-cols-12">
               
-              <div className="relative border border-slate-200 dark:border-slate-800 rounded-[2rem] bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl shadow-2xl p-6 overflow-hidden">
-                <div className="flex items-center justify-between border-b border-slate-200/50 dark:border-slate-800/50 pb-4 mb-4">
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-3 h-3 rounded-full bg-rose-500" />
-                    <span className="w-3 h-3 rounded-full bg-amber-500" />
-                    <span className="w-3 h-3 rounded-full bg-emerald-500" />
+              {/* Left Side: Mock Editor Panel */}
+              <div className="md:col-span-5 border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950 p-6 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2 mb-6">
+                    <Terminal className="w-4 h-4 text-emerald-500" />
+                    <span className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider">Editor Workspace</span>
                   </div>
-                  <span className="text-xs text-slate-400 font-mono flex items-center gap-1 bg-slate-100 dark:bg-slate-900 px-2.5 py-1 rounded-md border border-slate-200 dark:border-slate-800">
-                    <Globe className="w-3 h-3 text-indigo-500" /> b-y-p.app/{activeTab}
+
+                  <h3 className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-3">Select Design System Profile</h3>
+                  <div className="space-y-2 mb-6">
+                    {Object.keys(professions).map((key) => (
+                      <button
+                        key={key}
+                        onClick={() => handleTabChange(key)}
+                        className={`w-full text-left px-4 py-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-between cursor-pointer ${
+                          activeTab === key
+                            ? "bg-slate-200 dark:bg-slate-900 text-slate-950 dark:text-white"
+                            : "text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-900"
+                        }`}
+                      >
+                        <span className="capitalize">{key} config</span>
+                        <ChevronRight className={`w-3.5 h-3.5 transition-transform ${activeTab === key ? 'translate-x-0.5' : 'opacity-40'}`} />
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="border-t border-slate-200 dark:border-slate-800/80 pt-5">
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-2.5">Edit Skill Badges</span>
+                    <form onSubmit={addInteractiveSkill} className="flex gap-2 mb-4">
+                      <input 
+                        type="text" 
+                        placeholder="Add skill tag..."
+                        value={newSkillText}
+                        onChange={(e) => setNewSkillText(e.target.value)}
+                        className="flex-1 text-xs py-2 px-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 dark:focus:border-emerald-500"
+                      />
+                      <button 
+                        type="submit"
+                        className="px-3 py-2 bg-slate-950 dark:bg-white text-white dark:text-slate-950 rounded-lg text-xs font-semibold hover:bg-slate-850 dark:hover:bg-slate-100 transition-all cursor-pointer"
+                      >
+                        Add
+                      </button>
+                    </form>
+                  </div>
+                </div>
+
+                <div className="text-[10px] text-slate-400 flex items-center gap-1.5 font-mono pt-4 border-t border-slate-200/50 dark:border-slate-800/40">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Live synced to production server
+                </div>
+              </div>
+
+              {/* Right Side: Professional Portfolio Preview Panel */}
+              <div className="md:col-span-7 p-6 md:p-8 bg-white dark:bg-slate-900/40 flex flex-col justify-between">
+                
+                {/* Simulated Header */}
+                <div className="flex items-center justify-between border-b border-slate-200/60 dark:border-slate-800/60 pb-5 mb-5">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-bold text-slate-700 dark:text-slate-300 text-xs">
+                      {professions[activeTab].avatar}
+                    </div>
+                    <div>
+                      <h4 className="font-extrabold text-slate-950 dark:text-white text-sm font-outfit">{professions[activeTab].name}</h4>
+                      <p className="text-[11px] font-bold text-emerald-600 dark:text-emerald-500 uppercase tracking-wider">{professions[activeTab].role} @ {professions[activeTab].company}</p>
+                    </div>
+                  </div>
+                  <span className="text-[10px] text-slate-400 font-mono bg-slate-50 dark:bg-slate-900 px-2 py-1 rounded border border-slate-200/80 dark:border-slate-800/80">
+                    portfolio.me/{activeTab}
                   </span>
                 </div>
 
-                {/* Profession Toggles */}
-                <div className="flex gap-1.5 bg-slate-100/80 dark:bg-slate-900/80 p-1 rounded-xl mb-5 border border-slate-200/30 dark:border-slate-800/30">
-                  {Object.keys(professions).map((key) => (
-                    <button
-                      key={key}
-                      onClick={() => handleTabChange(key)}
-                      className={`flex-1 text-center py-2 px-1 text-xs font-semibold rounded-lg capitalize transition-all cursor-pointer ${
-                        activeTab === key 
-                          ? "bg-white dark:bg-slate-800 text-slate-950 dark:text-white shadow-sm" 
-                          : "text-slate-500 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white"
-                      }`}
-                    >
-                      {key}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Simulated Live Portfolio Preview card */}
-                <div className="border border-slate-200 dark:border-slate-800/60 rounded-2xl bg-white dark:bg-slate-900 p-5 shadow-inner relative overflow-hidden transition-all duration-300">
-                  {/* Subtle decorative mesh inside preview */}
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-indigo-500/10 to-transparent blur-md pointer-events-none" />
-                  
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center font-bold text-slate-700 dark:text-slate-300 font-outfit shadow-sm text-sm">
-                      {professions[activeTab].avatar}
-                    </div>
-                    <div className="space-y-1">
-                      <h4 className="font-bold text-slate-950 dark:text-white text-base font-outfit">{professions[activeTab].name}</h4>
-                      <p className="text-xs font-semibold text-indigo-600 dark:text-indigo-400">{professions[activeTab].role}</p>
-                    </div>
-                  </div>
-
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-3 leading-relaxed">
+                {/* Simulated About */}
+                <div className="space-y-4">
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                     {professions[activeTab].bio}
                   </p>
 
-                  <div className="mt-4">
-                    <span className="text-[10px] uppercase tracking-wider font-bold text-slate-400 block mb-2">Skills Showcase</span>
-                    <div className="flex flex-wrap gap-1.5 max-h-[85px] overflow-y-auto custom-scrollbar pr-1">
+                  {/* Skills Grid */}
+                  <div className="space-y-2">
+                    <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Expertise</span>
+                    <div className="flex flex-wrap gap-1.5">
                       <AnimatePresence>
-                        {interactiveSkills.map((skill, index) => (
+                        {interactiveSkills.map((skill) => (
                           <motion.span
                             key={skill}
-                            initial={{ scale: 0.8, opacity: 0 }}
+                            initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.8, opacity: 0 }}
-                            transition={{ duration: 0.15 }}
-                            className="inline-flex items-center gap-1 py-1 px-2.5 rounded-md text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 border border-slate-200/50 dark:border-slate-700/50 text-slate-700 dark:text-slate-300 transition-colors group/tag"
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            transition={{ duration: 0.12 }}
+                            className="inline-flex items-center gap-1.5 py-1 px-2 rounded-md text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300"
                           >
                             {skill}
                             <button
@@ -237,110 +254,102 @@ const LandingPage = () => {
                       </AnimatePresence>
                     </div>
                   </div>
+
+                  {/* Featured Projects Mock */}
+                  <div className="space-y-2 pt-2">
+                    <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Featured Work</span>
+                    <div className="grid grid-cols-2 gap-3">
+                      {professions[activeTab].projects.map((project, i) => (
+                        <div key={i} className="p-3 rounded-lg border border-slate-200/60 dark:border-slate-800 bg-slate-50/20 dark:bg-slate-900/20">
+                          <h5 className="text-[11px] font-bold text-slate-900 dark:text-white">{project.name}</h5>
+                          <p className="text-[10px] text-slate-400 mt-1">{project.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
 
-                {/* Try Interactive Editor Directly on Landing Page */}
-                <div className="mt-4 border-t border-slate-200/60 dark:border-slate-800/60 pt-4">
-                  <span className="text-xs font-bold text-slate-800 dark:text-slate-300 block mb-2">Try the Live Builder Editor here:</span>
-                  <form onSubmit={addInteractiveSkill} className="flex gap-2">
-                    <input 
-                      type="text" 
-                      placeholder="Add a skill (e.g. Docker)..."
-                      value={newSkillText}
-                      onChange={(e) => setNewSkillText(e.target.value)}
-                      className="flex-1 text-xs py-2 px-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
-                    />
-                    <button 
-                      type="submit"
-                      className="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
-                    >
-                      <Plus className="w-3.5 h-3.5" /> Add
-                    </button>
-                  </form>
-                </div>
               </div>
-            </div>
 
+            </div>
           </div>
+
         </div>
       </section>
 
-      {/* Beautiful Logo Cloud / Trust */}
-      <section className="py-8 border-y border-slate-200/50 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-950/20">
+      {/* Trust Banner */}
+      <section className="py-8 border-y border-slate-200/40 dark:border-slate-800/40 bg-slate-50/50 dark:bg-slate-950/20">
         <div className="max-w-7xl mx-auto px-6 text-center">
-          <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">Supports Everything recruiters look for</p>
+          <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-3">Designed for engineering and design standards</p>
           <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-300">
-            <span className="font-outfit font-extrabold text-base tracking-widest text-slate-600 dark:text-slate-400">RESPONSIVE</span>
-            <span className="font-outfit font-extrabold text-base tracking-widest text-slate-600 dark:text-slate-400">LIGHT &amp; DARK</span>
-            <span className="font-outfit font-extrabold text-base tracking-widest text-slate-600 dark:text-slate-400">CUSTOM THEMES</span>
-            <span className="font-outfit font-extrabold text-base tracking-widest text-slate-600 dark:text-slate-400">SEO OPTIMIZED</span>
+            <span className="font-outfit font-extrabold text-xs tracking-wider text-slate-650 dark:text-slate-400">CLEAN CODE SHOWCASE</span>
+            <span className="font-outfit font-extrabold text-xs tracking-wider text-slate-650 dark:text-slate-400">NO VISUAL CLUTTER</span>
+            <span className="font-outfit font-extrabold text-xs tracking-wider text-slate-650 dark:text-slate-400">HIGH-PERFORMANCE DATA</span>
+            <span className="font-outfit font-extrabold text-xs tracking-wider text-slate-650 dark:text-slate-400">ACCESSIBILITY FIRST</span>
           </div>
         </div>
       </section>
 
       {/* Features Grid */}
-      <section id="features" className="py-20 lg:py-28 relative">
+      <section id="features" className="py-16 lg:py-24 relative">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-            <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Supercharged Portfolios</span>
-            <h2 className="text-3xl md:text-4xl font-extrabold font-outfit text-slate-950 dark:text-white">Everything You Need to Stand Out</h2>
-            <p className="text-slate-600 dark:text-slate-400 font-medium">Clean, optimized sections carefully designed to maximize readability and impress recruiters.</p>
+          
+          <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-500">System Architecture</span>
+            <h2 className="text-2xl md:text-3xl font-extrabold font-outfit text-slate-950 dark:text-white">Why Professionals Choose Our Editor</h2>
+            <p className="text-slate-600 dark:text-slate-400 text-sm font-medium">Built without typical AI page builder fluff. Clean parameters lead to beautiful outcomes.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
-                icon: <Zap className="w-5 h-5 text-amber-500" />,
-                title: "Real-time Live Editor",
-                desc: "Type details, toggle features, watch your portfolio update instantly in our ultra-responsive dashboard editor."
+                icon: <Code className="w-5 h-5 text-emerald-600" />,
+                title: "Live Parameter Tuning",
+                desc: "Modify skills, experiences, and titles instantly. The portfolio automatically recalculates layout proportions for clean aesthetics."
               },
               {
-                icon: <Palette className="w-5 h-5 text-indigo-500" />,
-                title: "Stunning Layouts",
-                desc: "Toggle between Modern, Minimal, or Creative styles with a single click. Every template features both light and dark themes."
+                icon: <Palette className="w-5 h-5 text-slate-700 dark:text-slate-350" />,
+                title: "Professional Layout Themes",
+                desc: "No flashy animations or background gradients. Choose from strict Minimal, Creative, or Modern setups tuned for technical review."
               },
               {
-                icon: <Smartphone className="w-5 h-5 text-emerald-500" />,
-                title: "Lightning Performance",
-                desc: "No heavy bloated sites. Developed for ultimate speed and perfect SEO, ensuring your site reads perfectly on mobile or desktop."
+                icon: <Briefcase className="w-5 h-5 text-amber-600" />,
+                title: "Recruiter Ready Output",
+                desc: "Every public profile features semantic HTML, quick search indexing, and simple dark/light switching matches reviewer device themes."
               }
             ].map((feature, i) => (
               <div 
                 key={i}
-                className="p-8 rounded-[2rem] border border-slate-200/60 dark:border-slate-800/60 bg-white/50 dark:bg-slate-900/30 backdrop-blur-md hover:border-indigo-500/20 hover:shadow-lg dark:hover:shadow-indigo-500/5 transition-all group hover:-translate-y-1"
+                className="p-8 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/30 hover:border-emerald-500/20 hover:shadow-sm transition-all"
               >
-                <div className="w-10 h-10 rounded-2xl bg-slate-100 dark:bg-slate-800/70 border border-slate-200/50 dark:border-slate-700/50 flex items-center justify-center mb-6 group-hover:scale-105 transition-all">
+                <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800/70 border border-slate-200/50 dark:border-slate-750 flex items-center justify-center mb-6">
                   {feature.icon}
                 </div>
-                <h3 className="text-xl font-bold mb-3 font-outfit text-slate-950 dark:text-white">{feature.title}</h3>
-                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed font-medium">{feature.desc}</p>
+                <h3 className="text-base font-extrabold mb-2.5 font-outfit text-slate-950 dark:text-white">{feature.title}</h3>
+                <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed font-medium">{feature.desc}</p>
               </div>
             ))}
           </div>
+
         </div>
       </section>
 
-      {/* Beautiful interactive Showcase preview */}
-      <section className="py-16 border-t border-slate-200/50 dark:border-slate-800/50 bg-slate-50/30 dark:bg-slate-900/10">
-        <div className="max-w-5xl mx-auto px-6 lg:px-8">
-          <div className="relative border border-slate-200 dark:border-slate-800 rounded-[2.5rem] bg-gradient-to-b from-white to-slate-50 dark:from-slate-900 dark:to-slate-950 p-8 md:p-12 overflow-hidden shadow-2xl text-center space-y-6">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-80 h-32 bg-indigo-500/10 dark:bg-indigo-400/5 blur-3xl pointer-events-none rounded-full" />
+      {/* CTA Box */}
+      <section className="py-12 border-t border-slate-200/40 dark:border-slate-800/40 bg-slate-50/20 dark:bg-slate-950/20">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="relative border border-slate-200 dark:border-slate-800/80 rounded-2xl bg-white dark:bg-slate-950 p-8 md:p-12 overflow-hidden shadow-sm text-center space-y-5">
             
-            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300">
-              <Cpu className="w-3.5 h-3.5" /> Powered by Modern Frameworks
-            </span>
-
-            <h3 className="text-2xl md:text-3xl font-extrabold font-outfit text-slate-950 dark:text-white">Ready to impress recruiters?</h3>
-            <p className="text-slate-600 dark:text-slate-400 max-w-xl mx-auto font-medium text-sm md:text-base">
-              Get an instant portfolio with beautiful cards, custom layouts, project links, dynamic experience timelines, and skill displays.
+            <h3 className="text-xl md:text-2xl font-bold font-outfit text-slate-950 dark:text-white">Ready to deploy your public portfolio?</h3>
+            <p className="text-slate-650 dark:text-slate-405 max-w-lg mx-auto font-medium text-xs md:text-sm">
+              Takes less than 5 minutes. No templates to setup, no code to write. Configure your layout parameters and start sharing.
             </p>
 
-            <div className="pt-4 flex flex-col sm:flex-row justify-center gap-4">
+            <div className="pt-2 flex justify-center">
               <button 
                 onClick={handleModel}
-                className="px-8 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full text-sm font-bold shadow-lg shadow-indigo-500/25 dark:shadow-indigo-500/10 hover:shadow-indigo-500/35 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="px-6 py-3 bg-slate-950 dark:bg-white text-white dark:text-slate-950 rounded-xl text-xs font-bold hover:bg-slate-850 dark:hover:bg-slate-100 transition-all flex items-center gap-2 cursor-pointer shadow-sm"
               >
-                Create Your Profile <ArrowRight className="w-4 h-4" />
+                Create Profile <ArrowRight className="w-3.5 h-3.5 text-emerald-500" />
               </button>
             </div>
           </div>
@@ -348,13 +357,15 @@ const LandingPage = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-slate-200/50 dark:border-slate-800/50 py-12 bg-slate-50 dark:bg-slate-950/40 transition-colors">
+      <footer className="border-t border-slate-200/45 dark:border-slate-850 py-12 bg-white dark:bg-slate-950 transition-colors">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center font-bold text-white shadow-lg shadow-indigo-500/20 text-xs">BYP</div>
-            <span className="text-sm font-bold tracking-tight font-outfit text-slate-950 dark:text-white">Build Your Portfolio</span>
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-slate-950 dark:bg-white flex items-center justify-center text-white dark:text-slate-950">
+              <Layers className="w-4 h-4 text-emerald-500" />
+            </div>
+            <span className="text-sm font-bold tracking-tight font-outfit text-slate-950 dark:text-white">PortfolioBuilder</span>
           </div>
-          <span className="text-xs font-semibold text-slate-400">© 2026 Build Your Portfolio. Made for creators.</span>
+          <span className="text-xs font-medium text-slate-400">© 2026 PortfolioBuilder. Built for builders.</span>
         </div>
       </footer>
     </div>
