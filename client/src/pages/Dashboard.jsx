@@ -7,13 +7,9 @@ import {
   Plus, 
   Edit3, 
   Eye,
-  Layout,
   Copy,
   Check,
-  TrendingUp,
-  MousePointerClick,
   Layers,
-  ArrowUpRight,
   CheckCircle,
   HelpCircle
 } from 'lucide-react';
@@ -172,34 +168,7 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Quick Metrics Grid */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-950 rounded-2xl p-5 shadow-sm space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-500/5 dark:bg-emerald-500/10 flex items-center justify-center border border-emerald-500/10">
-                    <Eye className="w-4 h-4 text-emerald-600 dark:text-emerald-500" />
-                  </div>
-                  <span className="text-[10px] font-bold text-emerald-600 bg-emerald-500/5 dark:bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/10">+12%</span>
-                </div>
-                <div>
-                  <div className="text-xl font-bold font-outfit text-slate-950 dark:text-white">128</div>
-                  <div className="text-[11px] text-slate-450 dark:text-slate-500 font-semibold tracking-wide uppercase mt-0.5">Profile Views</div>
-                </div>
-              </div>
 
-              <div className="border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-950 rounded-2xl p-5 shadow-sm space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-500/5 dark:bg-emerald-500/10 flex items-center justify-center border border-emerald-500/10">
-                    <MousePointerClick className="w-4 h-4 text-emerald-600 dark:text-emerald-500" />
-                  </div>
-                  <span className="text-[10px] font-bold text-emerald-600 bg-emerald-500/5 dark:bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/10">+8%</span>
-                </div>
-                <div>
-                  <div className="text-xl font-bold font-outfit text-slate-950 dark:text-white">42</div>
-                  <div className="text-[11px] text-slate-450 dark:text-slate-500 font-semibold tracking-wide uppercase mt-0.5">Social Actions</div>
-                </div>
-              </div>
-            </div>
 
           </div>
 
@@ -234,22 +203,7 @@ const Dashboard = () => {
               </ul>
             </div>
 
-            {/* Pro tier callout */}
-            <div className="border border-slate-200 dark:border-slate-800/80 bg-slate-100/50 dark:bg-slate-950 rounded-2xl p-5 relative overflow-hidden shadow-sm space-y-4">
-              <div className="space-y-1">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                  Subscription Tier
-                </h3>
-                <h4 className="text-sm font-extrabold text-slate-950 dark:text-white">PortfolioBuilder Pro</h4>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed font-semibold">
-                  Unlock advanced custom CSS triggers, unlimited project lists, custom domains, and raw data exporters.
-                </p>
-              </div>
 
-              <button className="w-full py-2.5 bg-slate-950 dark:bg-white text-white dark:text-slate-950 text-xs font-bold rounded-xl hover:bg-slate-850 dark:hover:bg-slate-100 transition-all cursor-pointer">
-                Upgrade Account
-              </button>
-            </div>
 
           </div>
 
