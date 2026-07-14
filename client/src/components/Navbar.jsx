@@ -28,9 +28,6 @@ function Navbar() {
             </div>
             <span className="text-lg font-extrabold tracking-tight font-outfit text-slate-950 dark:text-white flex items-center gap-1.5">
               PortfolioBuilder
-              <span className="hidden sm:inline-block px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200/50 dark:border-slate-700/50">
-                PRO
-              </span>
             </span>
           </div>
 
