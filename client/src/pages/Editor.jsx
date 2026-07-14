@@ -169,9 +169,8 @@ const Editor = () => {
 
   const updateProjectTechStack = (index, techString) => {
     const updated = [...portfolio.projects];
-    // Split by comma or space, trim, and filter out empty strings
     updated[index].techStack = techString
-      .split(/[,\s]+/)  // Split by comma or whitespace (one or more)
+      .split(/[,\s]+/)
       .map(t => t.trim())
       .filter(t => t);
     setPortfolio({ ...portfolio, projects: updated });
@@ -185,123 +184,137 @@ const Editor = () => {
   };
 
   const tabs = [
-    { id: 'personal', label: 'Personal', icon: <User className="w-4 h-4" /> },
-    { id: 'experience', label: 'Experience', icon: <Briefcase className="w-4 h-4" /> },
-    { id: 'education', label: 'Education', icon: <GraduationCap className="w-4 h-4" /> },
-    { id: 'projects', label: 'Projects', icon: <Layers className="w-4 h-4" /> },
-    { id: 'settings', label: 'Settings', icon: <SettingsIcon className="w-4 h-4" /> },
+    { id: 'personal', label: 'Personal', icon: <User className="w-3.5 h-3.5" /> },
+    { id: 'experience', label: 'Experience', icon: <Briefcase className="w-3.5 h-3.5" /> },
+    { id: 'education', label: 'Education', icon: <GraduationCap className="w-3.5 h-3.5" /> },
+    { id: 'projects', label: 'Projects', icon: <Layers className="w-3.5 h-3.5" /> },
+    { id: 'settings', label: 'Settings', icon: <SettingsIcon className="w-3.5 h-3.5" /> },
   ];
 
   if (loading) {
     return (
-      <div className="min-h-screen mesh-bg flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
+        <Loader2 className="w-6 h-6 text-emerald-500 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen mesh-bg text-slate-900 dark:text-white font-sans selection:bg-indigo-500/30">
-      {/* Editor - Full Width */}
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 font-sans selection:bg-emerald-500/20">
+      
+      {/* Editor Main Flexbox */}
       <div className="w-full flex flex-col h-screen">
+        
         {/* Header */}
-        <header className="h-20 flex items-center justify-between px-6 t-nav shrink-0 z-50">
-          <div className="flex items-center gap-4">
-            <button onClick={() => navigate('/dashboard')} className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-xl transition-colors">
-              <ChevronLeft className="w-5 h-5" />
+        <header className="h-16 flex items-center justify-between px-6 border-b border-slate-200/40 dark:border-slate-800/40 bg-white/70 dark:bg-slate-950/70 backdrop-blur-md shrink-0 z-50">
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => navigate('/dashboard')} 
+              className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-900 border border-transparent hover:border-slate-200 dark:hover:border-slate-800 rounded-xl transition-all cursor-pointer text-slate-550 dark:text-slate-450 hover:text-slate-950 dark:hover:text-white"
+            >
+              <ChevronLeft className="w-4 h-4" />
             </button>
-            <h1 className="font-bold text-lg hidden sm:block font-outfit tracking-tight">Editor</h1>
+            <h1 className="font-extrabold text-sm hidden sm:block font-outfit tracking-tight text-slate-950 dark:text-white">Workspace Configuration</h1>
           </div>
           
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3.5">
             {saveStatus === 'success' && (
-              <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} className="text-s text-emerald-400 font-medium flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4" /> Saved
+              <motion.div 
+                initial={{ opacity: 0, x: 10 }} 
+                animate={{ opacity: 1, x: 0 }} 
+                className="text-xs text-emerald-600 dark:text-emerald-500 font-bold flex items-center gap-1.5"
+              >
+                <CheckCircle2 className="w-3.5 h-3.5" /> Live Synced
               </motion.div>
             )}
             <button 
               onClick={handleSave} 
               disabled={saving}
-              className="px-7 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-sm font-bold rounded-xl transition-all shadow-lg shadow-indigo-500/20 flex items-center gap-2 hover:shadow-indigo-500/40 transform active:scale-95"
+              className="px-5 py-2 bg-slate-950 dark:bg-white disabled:opacity-50 text-white dark:text-slate-950 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 hover:bg-slate-850 dark:hover:bg-slate-100 cursor-pointer shadow-sm active:scale-98"
             >
-              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-              Save
+              {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+              Publish Config
             </button>
           </div>
         </header>
 
         {/* Tab Navigation */}
-        <div className="flex justify-center h-20 overflow-x-auto no-scrollbar border-b border-black/5 dark:border-white/5 bg-black/[0.02] dark:bg-slate-950/10 backdrop-blur-sm shrink-0">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex w-full items-center gap-2 px-6 py-4 text-sm font-medium whitespace-nowrap transition-all border-b-2 ${
-                activeTab === tab.id 
-                  ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400 bg-indigo-500/5 justify-center' 
-                  : 'border-transparent text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-black/5 dark:hover:bg-white/5 justify-center hover:border-black/10 dark:hover:border-white/10'
-              }`}
-            >
-              {tab.icon}
-              {tab.label}
-            </button>
-          ))}
+        <div className="flex justify-center border-b border-slate-200/40 dark:border-slate-850 bg-white/30 dark:bg-slate-950/20 backdrop-blur-md shrink-0">
+          <div className="flex max-w-3xl w-full px-4 overflow-x-auto no-scrollbar gap-1 py-2">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap ${
+                  activeTab === tab.id 
+                    ? 'bg-slate-900 dark:bg-slate-900 text-white dark:text-white' 
+                    : 'text-slate-500 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-900'
+                }`}
+              >
+                {tab.icon}
+                {tab.label}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Form Content */}
-        <div className="flex-1 overflow-y-auto w-full flex items-start justify-center px-4 sm:px-8 py-8 custom-scrollbar">
-          <AnimatePresence mode="wait">
-            {activeTab === 'personal' && (
-              <PersonalInfoForm
-                personalInfo={portfolio.personalInfo}
-                updatePersonalInfo={updatePersonalInfo}
-                skills={portfolio.skills}
-                addSkill={addSkill}
-                updateSkill={updateSkill}
-                removeSkill={removeSkill}
-              />
-            )}
-            
-            {activeTab === 'experience' && (
-              <ExperienceForm
-                experience={portfolio.experience}
-                addExperience={addExperience}
-                updateExperience={updateExperience}
-                removeExperience={removeExperience}
-              />
-            )}
+        {/* Form Content Panel */}
+        <div className="flex-1 overflow-y-auto w-full flex items-start justify-center px-6 py-8 custom-scrollbar">
+          <div className="w-full max-w-7xl bg-white dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 sm:p-8 shadow-sm">
+            <AnimatePresence mode="wait">
+              {activeTab === 'personal' && (
+                <PersonalInfoForm
+                  personalInfo={portfolio.personalInfo}
+                  updatePersonalInfo={updatePersonalInfo}
+                  skills={portfolio.skills}
+                  addSkill={addSkill}
+                  updateSkill={updateSkill}
+                  removeSkill={removeSkill}
+                />
+              )}
+              
+              {activeTab === 'experience' && (
+                <ExperienceForm
+                  experience={portfolio.experience}
+                  addExperience={addExperience}
+                  updateExperience={updateExperience}
+                  removeExperience={removeExperience}
+                />
+              )}
 
-            {activeTab === 'education' && (
-              <EducationForm
-                education={portfolio.education}
-                addEducation={addEducation}
-                updateEducation={updateEducation}
-                removeEducation={removeEducation}
-              />
-            )}
+              {activeTab === 'education' && (
+                <EducationForm
+                  education={portfolio.education}
+                  addEducation={addEducation}
+                  updateEducation={updateEducation}
+                  removeEducation={removeEducation}
+                />
+              )}
 
-            {activeTab === 'projects' && (
-              <ProjectsForm
-                projects={portfolio.projects}
-                addProject={addProject}
-                updateProject={updateProject}
-                updateProjectTechStack={updateProjectTechStack}
-                removeProject={removeProject}
-              />
-            )}
+              {activeTab === 'projects' && (
+                <ProjectsForm
+                  projects={portfolio.projects}
+                  addProject={addProject}
+                  updateProject={updateProject}
+                  updateProjectTechStack={updateProjectTechStack}
+                  removeProject={removeProject}
+                />
+              )}
 
-            {activeTab === 'settings' && (
-              <SettingsForm
-                settings={portfolio.settings}
-                templateId={portfolio.templateId}
-                updateSettings={updateSettings}
-                setTemplateId={(value) => setPortfolio({ ...portfolio, templateId: value })}
-                socialLinks={portfolio.socialLinks}
-                updateSocialLinks={updateSocialLinks}
-              />
-            )}
-          </AnimatePresence>
+              {activeTab === 'settings' && (
+                <SettingsForm
+                  settings={portfolio.settings}
+                  templateId={portfolio.templateId}
+                  updateSettings={updateSettings}
+                  setTemplateId={(value) => setPortfolio({ ...portfolio, templateId: value })}
+                  socialLinks={portfolio.socialLinks}
+                  updateSocialLinks={updateSocialLinks}
+                />
+              )}
+            </AnimatePresence>
+          </div>
         </div>
+
       </div>
     </div>
   );

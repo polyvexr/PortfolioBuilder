@@ -35,7 +35,7 @@ const SettingsForm = ({ settings, templateId, updateSettings, setTemplateId, soc
                 <button
                   onClick={() => updateSettings('isPublic', !settings.isPublic)}
                   className={`relative w-14 h-7 rounded-full transition-colors ${
-                    settings.isPublic ? 'bg-indigo-600' : 'bg-slate-300 dark:bg-slate-700'
+                    settings.isPublic ? 'bg-emerald-600' : 'bg-slate-300 dark:bg-slate-700'
                   }`}
                 >
                   <div
@@ -52,9 +52,9 @@ const SettingsForm = ({ settings, templateId, updateSettings, setTemplateId, soc
               <div className="grid grid-cols-2 gap-3">
                 <button
                   onClick={() => updateSettings('theme', 'light')}
-                  className={`p-4 rounded-xl border-2 transition-all ${
+                  className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
                     settings.theme === 'light'
-                      ? 'border-indigo-500 bg-indigo-500/10'
+                      ? 'border-emerald-500 bg-emerald-500/5'
                       : 'border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5'
                   }`}
                 >
@@ -63,9 +63,9 @@ const SettingsForm = ({ settings, templateId, updateSettings, setTemplateId, soc
                 </button>
                 <button
                   onClick={() => updateSettings('theme', 'dark')}
-                  className={`p-4 rounded-xl border-2 transition-all ${
+                  className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
                     settings.theme === 'dark'
-                      ? 'border-indigo-500 bg-indigo-500/10'
+                      ? 'border-emerald-500 bg-emerald-500/5'
                       : 'border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5'
                   }`}
                 >
@@ -87,14 +87,14 @@ const SettingsForm = ({ settings, templateId, updateSettings, setTemplateId, soc
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.97 }}
                       onClick={() => setTemplateId(opt.value)}
-                      className={`relative p-4 rounded-xl border-2 transition-all text-center ${
+                      className={`relative p-4 rounded-xl border-2 transition-all text-center cursor-pointer ${
                         isSelected
-                          ? 'border-indigo-500 bg-indigo-500/10 shadow-lg shadow-indigo-500/10'
+                          ? 'border-emerald-500 bg-emerald-500/5'
                           : 'border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 hover:border-black/20 dark:hover:border-white/20 hover:bg-black/10 dark:hover:bg-white/10'
                       }`}
                     >
                       {isSelected && (
-                        <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-indigo-500 flex items-center justify-center">
+                        <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-emerald-600 flex items-center justify-center">
                           <Check className="w-3 h-3 text-white" />
                         </div>
                       )}

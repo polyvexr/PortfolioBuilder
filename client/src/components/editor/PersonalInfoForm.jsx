@@ -121,7 +121,7 @@ const PersonalInfoForm = ({ personalInfo, updatePersonalInfo, skills, addSkill, 
             </div>
             <button
               onClick={addSkill}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-xl text-sm font-bold text-white flex items-center gap-2 transition-colors"
+              className="px-4 py-2 bg-slate-950 dark:bg-white text-white dark:text-slate-950 hover:bg-slate-850 dark:hover:bg-slate-100 rounded-xl text-xs font-bold flex items-center gap-2 transition-all cursor-pointer"
             >
               <Plus className="w-4 h-4" /> Add
             </button>
