@@ -6,16 +6,22 @@ import {
   ArrowUpRight, Zap, Target
 } from 'lucide-react';
 
+const formatUrl = (url) => {
+  if (!url) return '';
+  if (/^https?:\/\//i.test(url)) return url;
+  return `https://${url}`;
+};
+
 const MinimalTemplate = ({ portfolio, isDark }) => {
   const { personalInfo, education, experience, projects, skills, socialLinks } = portfolio;
 
   const fadeIn = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+    hidden: { opacity: 0, y: 4 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
   };
 
   return (
-    <div className={`min-h-screen ${isDark ? 'mesh-gradient-dark text-slate-200' : 'mesh-gradient-light text-slate-800'} selection:bg-indigo-500 selection:text-white font-sans`}>
+    <div className={`min-h-screen ${isDark ? 'bg-zinc-950 text-zinc-300' : 'bg-white text-zinc-800'} selection:bg-indigo-500 selection:text-white font-sans`}>
       <main className="max-w-6xl mx-auto px-6 py-12 lg:py-24">
         
         {/* Bento Grid Layout */}
@@ -26,26 +32,24 @@ const MinimalTemplate = ({ portfolio, isDark }) => {
             initial="hidden"
             animate="visible"
             variants={fadeIn}
-            className={`md:col-span-8 p-8 lg:p-12 rounded-[2.5rem] ${isDark ? 'glass-card-dark' : 'glass-card'} shadow-sm relative overflow-hidden group`}
+            className={`md:col-span-8 p-8 lg:p-12 rounded-2xl border ${isDark ? 'bg-zinc-900/40 border-zinc-800/80 text-zinc-300' : 'bg-zinc-50/50 border-zinc-200/60 text-zinc-800'} shadow-sm relative overflow-hidden group`}
           >
             <div className="relative z-10">
               <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-10">
 
                 <div className="text-center md:text-left">
-                  <h1 className={`text-4xl lg:text-6xl font-black tracking-tight mb-4 font-outfit uppercase italic ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  <h1 className={`text-3xl lg:text-5xl font-extrabold tracking-tight mb-4 font-outfit ${isDark ? 'text-white' : 'text-slate-900'}`}>
                     {personalInfo?.name}
                   </h1>
-                  <p className={`text-xl font-bold ${isDark ? 'text-indigo-400' : 'text-indigo-600'} italic`}>
+                  <p className={`text-lg font-semibold ${isDark ? 'text-indigo-400' : 'text-indigo-600'}`}>
                     {personalInfo?.role}
                   </p>
                 </div>
               </div>
-              <p className={`text-xl lg:text-2xl leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'} font-medium max-w-2xl`}>
+              <p className={`text-base lg:text-lg leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'} font-medium max-w-2xl`}>
                 {personalInfo?.bio}
               </p>
             </div>
-            {/* Background design */}
-            <div className={`absolute -top-10 -right-10 w-40 h-40 rounded-full blur-[80px] opacity-20 ${isDark ? 'bg-indigo-500' : 'bg-indigo-400'}`} />
           </motion.section>
 
           {/* 2. Contact Info (Small Bento) */}
@@ -54,10 +58,10 @@ const MinimalTemplate = ({ portfolio, isDark }) => {
             animate="visible"
             variants={fadeIn}
             transition={{ delay: 0.1 }}
-            className={`md:col-span-4 p-8 rounded-[2.5rem] ${isDark ? 'glass-card-dark' : 'glass-card'} shadow-sm flex flex-col justify-between`}
+            className={`md:col-span-4 p-8 rounded-2xl border ${isDark ? 'bg-zinc-900/40 border-zinc-800/80 text-zinc-300' : 'bg-zinc-50/50 border-zinc-200/60 text-zinc-800'} shadow-sm flex flex-col justify-between`}
           >
             <div className="space-y-6">
-              <h2 className={`text-xs font-black uppercase tracking-[0.3em] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Contact & Location</h2>
+              <h2 className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Contact & Location</h2>
               <div className="space-y-4">
                 {personalInfo?.email && (
                   <a href={`mailto:${personalInfo.email}`} className="flex items-center gap-3 transition-colors hover:text-indigo-500">
@@ -79,8 +83,8 @@ const MinimalTemplate = ({ portfolio, isDark }) => {
                 { icon: Linkedin, href: socialLinks?.linkedin },
                 { icon: Twitter, href: socialLinks?.twitter }
               ].map((social, i) => social.href && (
-                <a key={i} href={social.href} target="_blank" rel="noopener noreferrer" className={`p-4 rounded-2xl ${isDark ? 'bg-white/5 hover:bg-white/10' : 'bg-white/40 hover:bg-white/60'} transition-all`}>
-                  <social.icon className="w-5 h-5" />
+                <a key={i} href={formatUrl(social.href)} target="_blank" rel="noopener noreferrer" className={`p-3 rounded-xl border ${isDark ? 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white' : 'bg-white border-zinc-200 text-zinc-650 hover:text-black'} transition-colors`}>
+                  <social.icon className="w-4 h-4" />
                 </a>
               ))}
             </div>
@@ -92,17 +96,17 @@ const MinimalTemplate = ({ portfolio, isDark }) => {
             animate="visible"
             variants={fadeIn}
             transition={{ delay: 0.2 }}
-            className={`md:col-span-5 p-8 rounded-[2.5rem] ${isDark ? 'glass-card-dark' : 'glass-card'} shadow-sm`}
+            className={`md:col-span-5 p-8 rounded-2xl border ${isDark ? 'bg-zinc-900/40 border-zinc-800/80' : 'bg-zinc-50/50 border-zinc-200/60'} shadow-sm`}
           >
-            <h2 className={`text-2xl font-black mb-8 italic flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              <Zap className="w-6 h-6 text-indigo-500" /> TOP SKILLS
+            <h2 className={`text-xl font-bold mb-6 flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              <Zap className="w-5 h-5 text-indigo-500" /> Top Skills
             </h2>
             <div className="flex flex-wrap gap-2">
               {skills?.length > 0 ? skills.map((skill, i) => (
-                <span key={i} className={`px-4 py-2 rounded-xl text-sm font-black uppercase tracking-tighter ${isDark ? 'bg-white/5 text-slate-300 border-white/5' : 'bg-white text-slate-700 border-slate-200'} border group hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all cursor-default shadow-sm`}>
+                <span key={i} className={`px-3 py-1.5 rounded-lg text-xs font-medium border ${isDark ? 'bg-zinc-900 border-zinc-800 text-zinc-300' : 'bg-white border-zinc-200 text-zinc-705'} hover:bg-indigo-650 dark:hover:bg-indigo-600 hover:text-white transition-colors cursor-default shadow-sm`}>
                   {skill.name}
                 </span>
-              )) : <span className="opacity-50 italic">No skills added.</span>}
+              )) : <span className="opacity-50 italic text-sm">No skills added.</span>}
             </div>
           </motion.section>
 
@@ -112,22 +116,22 @@ const MinimalTemplate = ({ portfolio, isDark }) => {
             animate="visible"
             variants={fadeIn}
             transition={{ delay: 0.3 }}
-            className={`md:col-span-7 p-8 rounded-[2.5rem] ${isDark ? 'glass-card-dark' : 'glass-card'} shadow-sm max-h-[500px] overflow-y-auto custom-scrollbar`}
+            className={`md:col-span-7 p-8 rounded-2xl border ${isDark ? 'bg-zinc-900/40 border-zinc-800/80' : 'bg-zinc-50/50 border-zinc-200/60'} shadow-sm max-h-[500px] overflow-y-auto custom-scrollbar`}
           >
-            <h2 className={`text-2xl font-black mb-8 italic flex items-center gap-2 sticky top-0 ${isDark ? 'bg-[#0f0f0f]/0 backdrop-blur-xl' : 'bg-white/0 backdrop-blur-xl'} pb-4 z-10 rounded-xl`}>
-              <Target className="w-6 h-6 text-indigo-500" /> EXP. LOG
+            <h2 className={`text-xl font-bold mb-6 flex items-center gap-2 sticky top-0 ${isDark ? 'bg-zinc-950/80 backdrop-blur-md' : 'bg-white/80 backdrop-blur-md'} pb-4 z-10 rounded-xl`}>
+              <Target className="w-4 h-4 text-indigo-500" /> Experience
             </h2>
             <div className="space-y-8">
               {experience?.length > 0 ? experience.map((exp, i) => (
                 <div key={i} className="relative pl-6 border-l-2 border-indigo-500/20 last:border-0 pb-2">
                   <div className="absolute top-0 left-[-5px] w-2 h-2 rounded-full bg-indigo-500" />
                   <div className="flex justify-between items-start mb-1">
-                    <h3 className={`font-black uppercase tracking-tight text-lg leading-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>{exp.position}</h3>
-                    <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-md ${isDark ? 'bg-white/10 text-slate-400' : 'bg-slate-200 text-slate-500'}`}>
+                    <h3 className={`font-bold text-base leading-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>{exp.position}</h3>
+                    <span className={`text-[10px] font-semibold uppercase px-2 py-0.5 rounded-md ${isDark ? 'bg-white/10 text-slate-400' : 'bg-slate-200 text-slate-500'}`}>
                       {exp.startDate} - {exp.endDate}
                     </span>
                   </div>
-                  <p className="text-indigo-500 font-bold mb-3 italic">{exp.company}</p>
+                  <p className="text-indigo-500 font-medium mb-2">{exp.company}</p>
                   <p className={`text-sm leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'} font-medium`}>{exp.description}</p>
                 </div>
               )) : <p className="opacity-50 italic">No experience logged.</p>}
@@ -143,7 +147,7 @@ const MinimalTemplate = ({ portfolio, isDark }) => {
             className="md:col-span-12"
           >
             <div className="flex items-center justify-between mb-8 px-4">
-              <h2 className={`text-3xl font-black italic tracking-tighter uppercase ${isDark ? 'text-white' : 'text-slate-900'}`}>SELECTED WORKS</h2>
+              <h2 className={`text-2xl font-bold tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>Featured Projects</h2>
               <div className="h-px flex-1 mx-8 bg-current opacity-10" />
             </div>
             
@@ -151,22 +155,27 @@ const MinimalTemplate = ({ portfolio, isDark }) => {
               {projects?.length > 0 ? projects.map((project, i) => (
                 <motion.div 
                   key={i}
-                  whileHover={{ y: -5 }}
-                  className={`p-8 rounded-[2.5rem] ${isDark ? 'glass-card-dark' : 'glass-card'} shadow-sm group relative overflow-hidden`}
+                  whileHover={{ y: -2 }}
+                  className={`p-6 rounded-2xl border ${isDark ? 'bg-zinc-900/40 border-zinc-800/80' : 'bg-zinc-50/50 border-zinc-200/60'} shadow-sm group relative overflow-hidden`}
                 >
-                  <div className="flex justify-between items-start mb-12">
-                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${isDark ? 'bg-white/5 text-white' : 'bg-indigo-50 text-indigo-500'} group-hover:bg-indigo-600 group-hover:text-white transition-all`}>
-                      <Layers className="w-6 h-6" />
+                  <div className="flex justify-between items-center mb-6">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isDark ? 'bg-zinc-800 text-zinc-300' : 'bg-zinc-100 text-zinc-750'}`}>
+                      <Layers className="w-5 h-5" />
                     </div>
-                    <div className="flex gap-2 translate-y-[-10px] translate-x-[10px] opacity-0 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-300">
+                    <div className="flex gap-2">
+                      {project.githubLink && (
+                        <a href={formatUrl(project.githubLink)} target="_blank" rel="noopener noreferrer" className={`p-2 rounded-lg ${isDark ? 'hover:bg-zinc-800 text-zinc-400 hover:text-white' : 'hover:bg-zinc-205/60 text-zinc-500 hover:text-black'} transition-colors`}>
+                          <Github className="w-4 h-4" />
+                        </a>
+                      )}
                       {project.liveLink && (
-                        <a href={project.liveLink} target="_blank" rel="noopener noreferrer" className="p-3 bg-indigo-600 text-white rounded-full shadow-lg shadow-indigo-500/20">
-                          <ArrowUpRight className="w-5 h-5" />
+                        <a href={formatUrl(project.liveLink)} target="_blank" rel="noopener noreferrer" className={`p-2 rounded-lg ${isDark ? 'hover:bg-zinc-800 text-zinc-400 hover:text-white' : 'hover:bg-zinc-205/60 text-zinc-500 hover:text-black'} transition-colors`}>
+                          <ArrowUpRight className="w-4 h-4" />
                         </a>
                       )}
                     </div>
                   </div>
-                  <h3 className={`text-2xl font-black mb-4 tracking-tighter uppercase ${isDark ? 'text-white' : 'text-slate-900'}`}>{project.title}</h3>
+                  <h3 className={`text-xl font-bold mb-3 tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>{project.title}</h3>
                   <p className={`text-sm mb-8 leading-relaxed font-medium ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>{project.description}</p>
                   <div className="flex flex-wrap gap-2">
                     {project.techStack?.map((tech, j) => (
@@ -175,7 +184,7 @@ const MinimalTemplate = ({ portfolio, isDark }) => {
                   </div>
                   
                   {/* Decorative number */}
-                  <div className={`absolute bottom-[-20px] right-[-10px] text-8xl font-black italic ${isDark ? 'text-white/5' : 'text-slate-200/50'} pointer-events-none group-hover:text-indigo-500/10 transition-colors`}>
+                  <div className={`absolute bottom-[-10px] right-5 text-5xl font-black opacity-[0.03] ${isDark ? 'text-white' : 'text-slate-200'} pointer-events-none group-hover:text-indigo-500/10 transition-colors`}>
                     0{i+1}
                   </div>
                 </motion.div>
@@ -189,11 +198,11 @@ const MinimalTemplate = ({ portfolio, isDark }) => {
             animate="visible"
             variants={fadeIn}
             transition={{ delay: 0.5 }}
-            className={`md:col-span-12 p-12 rounded-[2.5rem] ${isDark ? 'glass-card-dark' : 'glass-card'} shadow-sm`}
+            className={`md:col-span-12 p-8 lg:p-12 rounded-2xl border ${isDark ? 'bg-zinc-900/40 border-zinc-800/80' : 'bg-zinc-50/50 border-zinc-200/60'} shadow-sm`}
           >
             <div className="grid md:grid-cols-2 gap-12">
               <div>
-                <h2 className={`text-3xl font-black italic uppercase tracking-tighter mb-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>Education</h2>
+                <h2 className={`text-2xl font-bold tracking-tight mb-1 ${isDark ? 'text-white' : 'text-slate-900'}`}>Education</h2>
                 <p className={`font-medium ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Academic profile and certifications.</p>
               </div>
               <div className="space-y-10">
@@ -203,9 +212,9 @@ const MinimalTemplate = ({ portfolio, isDark }) => {
                       <BookOpen className="w-6 h-6" />
                     </div>
                     <div>
-                      <h4 className={`text-xl font-bold uppercase tracking-tight mb-1 ${isDark ? 'text-white' : 'text-slate-900'}`}>{edu.degree} in {edu.fieldOfStudy}</h4>
-                      <p className="font-black text-indigo-500 italic mb-2">{edu.institution}</p>
-                      <span className={`text-xs font-black uppercase tracking-widest ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>{edu.startYear} — {edu.endYear}</span>
+                      <h4 className={`text-lg font-bold tracking-tight mb-1 ${isDark ? 'text-white' : 'text-slate-900'}`}>{edu.degree} in {edu.fieldOfStudy}</h4>
+                      <p className="font-semibold text-indigo-500 mb-1">{edu.institution}</p>
+                      <span className={`text-xs font-medium uppercase tracking-wider ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>{edu.startYear} — {edu.endYear}</span>
                     </div>
                   </div>
                 )) : <p className="opacity-50 italic">No education listed.</p>}
