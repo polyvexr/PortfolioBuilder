@@ -9,31 +9,7 @@ const levelOptions = [
   { value: 'Expert', color: 'bg-rose-500/20 text-rose-400 border-rose-500/30', activeColor: 'bg-rose-500 text-white shadow-lg shadow-rose-500/25' },
 ];
 
-const LevelPills = ({ value, onChange }) => {
-  return (
-    <div className="flex flex-wrap gap-1.5">
-      {levelOptions.map((opt) => {
-        const isActive = value === opt.value;
-        return (
-          <motion.button
-            key={opt.value}
-            type="button"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => onChange(opt.value)}
-            className={`px-2.5 py-1 rounded-full text-[11px] font-bold transition-all border ${
-              isActive
-                ? opt.activeColor
-                : `${opt.color} hover:opacity-80`
-            }`}
-          >
-            {opt.value}
-          </motion.button>
-        );
-      })}
-    </div>
-  );
-};
+
 
 const SkillsForm = ({ skills, addSkill, updateSkill, removeSkill }) => {
   return (
@@ -64,25 +40,32 @@ const SkillsForm = ({ skills, addSkill, updateSkill, removeSkill }) => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="flex flex-col gap-3">
         {skills.map((skill, index) => (
-          <div key={index} className="t-card p-4 rounded-[1.5rem] flex items-center gap-3 relative">
-            <div className="flex-1 space-y-2">
+          <div key={index} className="t-card p-3 rounded-2xl flex items-center gap-3 relative">
+            <div className="flex-1 flex flex-col sm:flex-row gap-3">
               <input
                 type="text"
                 value={skill.name}
                 onChange={(e) => updateSkill(index, 'name', e.target.value)}
-                className="w-full t-input rounded-lg px-3 py-2 text-sm"
+                className="w-full t-input rounded-xl px-3 py-2 text-sm flex-1"
                 placeholder="React.js"
               />
-              <LevelPills
+              <select
                 value={skill.level}
-                onChange={(val) => updateSkill(index, 'level', val)}
-              />
+                onChange={(e) => updateSkill(index, 'level', e.target.value)}
+                className="w-full sm:w-48 t-input rounded-xl px-3 py-2 text-sm cursor-pointer outline-none bg-transparent"
+              >
+                {levelOptions.map(opt => (
+                  <option key={opt.value} value={opt.value} className="text-slate-900 bg-white dark:bg-slate-900 dark:text-white">
+                    {opt.value}
+                  </option>
+                ))}
+              </select>
             </div>
             <button
               onClick={() => removeSkill(index)}
-              className="p-2 hover:bg-red-500/20 rounded-lg text-red-400 transition-colors"
+              className="p-2 hover:bg-red-500/20 rounded-lg text-red-400 transition-colors shrink-0 cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
