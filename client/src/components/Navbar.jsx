@@ -28,9 +28,6 @@ function Navbar() {
             </div>
             <span className="text-lg font-extrabold tracking-tight font-outfit text-slate-950 dark:text-white flex items-center gap-1.5">
               PortfolioBuilder
-              <span className="hidden sm:inline-block px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200/50 dark:border-slate-700/50">
-                PRO
-              </span>
             </span>
           </div>
 
@@ -48,15 +45,6 @@ function Navbar() {
 
             {user ? (
               <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 dark:bg-slate-900 rounded-full border border-slate-200/60 dark:border-slate-800/80">
-                  <div className="w-5.5 h-5.5 rounded-full bg-slate-900 dark:bg-slate-100 text-[10px] font-bold text-white dark:text-slate-950 flex items-center justify-center shadow-sm">
-                    {user?.name?.charAt(0)?.toUpperCase()}
-                  </div>
-                  <span className="text-xs font-bold text-slate-700 dark:text-slate-300 tracking-wide">
-                    {user?.name?.toUpperCase()}
-                  </span>
-                </div>
-
                 <button 
                   onClick={handleLogout}
                   className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50/50 dark:hover:bg-rose-950/10 rounded-xl transition-colors cursor-pointer"
