@@ -1,14 +1,16 @@
-# 📖 Build Your Portfolio — Technical Documentation
+# Technical Documentation and Development Guide
 
-> Comprehensive technical reference for developers working on the **Build Your Portfolio** project.
+This document serves as the comprehensive development guide, technical reference, and system architecture manual for developers working on the Build Your Portfolio project.
 
----
+***
 
 ## Table of Contents
 
 - [Architecture Overview](#architecture-overview)
-- [Development Environment](#development-environment)
-- [Frontend (Client)](#frontend-client)
+- [Development Environment Setup](#development-environment-setup)
+- [Available Scripts](#available-scripts)
+- [Project Structure](#project-structure)
+- [Frontend Development](#frontend-development)
   - [Routing](#routing)
   - [Context Providers](#context-providers)
   - [API Layer](#api-layer)
@@ -16,760 +18,423 @@
   - [Components](#components)
   - [Templates](#templates)
   - [Styling](#styling)
-- [Backend (Server)](#backend-server)
+- [Backend Development](#backend-development)
   - [Express App](#express-app)
   - [Database Models](#database-models)
   - [API Routes](#api-routes)
   - [Authentication Middleware](#authentication-middleware)
+- [Developer Workflow and Conventions](#developer-workflow-and-conventions)
+  - [Branching Strategy](#branching-strategy)
+  - [Commit Messages](#commit-messages)
+  - [Code Style](#code-style)
+- [Step-by-Step Development Instructions](#step-by-step-development-instructions)
+  - [Adding a New Template](#adding-a-new-template)
+  - [Adding a New Editor Tab](#adding-a-new-editor-tab)
+  - [Adding a New API Endpoint](#adding-a-new-api-endpoint)
+  - [Testing Your Changes](#testing-your-changes)
 - [Deployment](#deployment)
 - [Environment Variables](#environment-variables)
 - [Data Flow Diagrams](#data-flow-diagrams)
 - [Error Handling](#error-handling)
 - [Security](#security)
 
----
+***
 
 ## Architecture Overview
 
-The project is a **monorepo** containing both the frontend and backend:
+The project is structured as a monorepo containing both the frontend and backend applications:
 
 ```
-┌─────────────────────────────────────────────────────┐
-│                   Monorepo Root                     │
-│  ┌──────────────┐  ┌───────────────────────────┐   │
-│  │   server/     │  │        client/             │   │
-│  │  Express API  │  │  React + Vite SPA          │   │
-│  │  MongoDB ODM  │  │  Tailwind CSS + Framer     │   │
-│  │  JWT Auth     │  │  Motion                    │   │
-│  └──────┬───────┘  └─────────────┬───────────── │   │
-│         │                        │               │   │
-│         └────────┬───────────────┘               │   │
-│                  │                                   │
-│         dev-server.js (unified)                      │
-│         Serves API + Vite on :5173                   │
-└─────────────────────────────────────────────────────┘
+Monorepo Root
+  ├─ server/     (Express API, MongoDB ODM, JWT Auth)
+  ├─ client/     (React, Vite SPA, Tailwind CSS, Framer Motion)
+  └─ dev-server.js (Unified dev server running API and Vite together)
 ```
 
-**Key design decisions:**
+Key Design Decisions:
+- **Unified Dev Server**: The dev-server.js script creates a single Express and Vite instance. API routes are mounted first under /api, and all remaining requests are passed to Vite as a single-page application fallback. This design prevents Cross-Origin Resource Sharing (CORS) issues during development.
+- **Modal-Based Authentication**: Login and registration are overlay components rather than separate routes. They are mounted at the root layout and toggled using the authentication context state.
+- **Template System**: The public portfolio page renders a React template component dynamically based on the template identifier stored in the database.
+- **Vercel Deployment**: A serverless function adapter (api/all.js) wraps the Express application for production execution, while the Vite client is built into static assets.
 
-- **Unified dev server** — `dev-server.js` creates a single Express + Vite instance. API routes mount first (`/api/*`), then Vite handles all remaining requests as a SPA fallback. This avoids CORS issues during development.
-- **Modal-based auth** — Login and Register are not separate pages/routes. They are modal overlays that are always mounted at the top level and toggled via AuthContext state (`showLoginModal` / `showRegisterModal`).
-- **Template system** — The public portfolio page dynamically selects which React component to render based on the `templateId` field stored in the portfolio document.
-- **Vercel deployment** — A serverless function adapter (`api/[[...all]].js`) wraps the Express app for production. The Vite client is built to `client/dist/` and served as static files.
+***
 
----
+## Development Environment Setup
 
-## Development Environment
+### Prerequisites
+- Node.js version 16 or higher
+- MongoDB (local database or a remote MongoDB Atlas database instance)
+- Git
+- npm (Node Package Manager)
 
-### Unified Dev Server (`dev-server.js`)
+### Installation Steps
 
-Instead of running the backend and frontend separately, the project uses a unified dev server:
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd builder-your-portfolio
+   ```
 
-```
-node dev-server.js
-```
+2. **Install dependencies**
+   The root postinstall script automatically installs the client dependencies.
+   ```bash
+   npm install
+   ```
 
-**How it works:**
+3. **Set up environment variables**
+   Create a .env file inside the `server` directory:
+   ```env
+   MONGO_URI=mongodb://localhost:27017/portfolio
+   JWT_SECRET=your_jwt_secret_key_here
+   ```
 
-1. Imports the Express app from `server/app.js` (registers API routes + connects to MongoDB)
-2. Creates a Vite dev server in **middleware mode** (`server: { middlewareMode: true }`)
-3. Mounts Vite's middleware **after** Express routes — so `/api/*` hits Express, everything else passes to Vite
-4. Listens on port **5173** (configurable via `PORT` env var)
+   Optional: Create a .env file inside the `client` directory:
+   ```env
+   VITE_API_URL=https://your-production-api.com
+   ```
 
-**Network access:**
+4. **Start the application**
+   Run the unified dev server (starts both Express API and Vite frontend):
+   ```bash
+   npm run dev
+   ```
+   The application will be accessible at http://localhost:5173. API requests are routed internally to /api.
 
-```bash
-npm run dev -- --host    # Exposes on 0.0.0.0 for LAN access
-```
+***
 
-### Available Scripts
+## Available Scripts
+
+The following scripts can be executed from the root directory:
 
 | Script | Command | Description |
 |---|---|---|
-| `npm run dev` | `node dev-server.js` | Start unified dev server (API + frontend) |
-| `npm run build` | `cd client && npm run build` | Build production client bundle |
-| `npm run dev:server` | `node server/index.js` | Run Express API standalone (port 5000) |
-| `npm run postinstall` | `cd client && npm install` | Auto-install client deps after root install |
+| npm run dev | node dev-server.js | Start unified dev server (API and frontend) |
+| npm run build | cd client && npm run build | Build production client bundle |
+| npm run dev:server | node server/index.js | Run Express API standalone on port 5000 |
+| npm run postinstall | cd client && npm install | Automatically install client dependencies |
 
-**Client-only scripts** (from `client/` directory):
+Client-only scripts (run from the `client` directory):
 
 | Script | Description |
 |---|---|
-| `npm run dev` | Start Vite dev server only (no API) |
-| `npm run build` | Production build to `dist/` |
-| `npm run preview` | Preview production build locally |
-| `npm run lint` | Run ESLint |
+| npm run dev | Start Vite dev server only (no API backend) |
+| npm run build | Build the production assets to client/dist |
+| npm run preview | Preview the production build locally |
+| npm run lint | Run ESLint static analysis |
 
----
+***
 
-## Frontend (Client)
+## Project Structure
 
-**Stack:** React 19 · Vite 7 · Tailwind CSS 4 · Framer Motion 12 · React Router 7
+```
+builder-your-portfolio/
+├── api/
+│   └── [[...all]].js          # Vercel serverless adapter
+├── dev-server.js               # Unified Express and Vite dev server
+├── vercel.json                 # Vercel deployment configuration
+├── package.json                # Root package configuration
+│
+├── client/                     # React frontend (Vite)
+│   ├── index.html
+│   ├── package.json
+│   ├── vite.config.js
+│   └── src/
+│       ├── App.jsx             # Routes and entry layout
+│       ├── main.jsx            # React mounting entrypoint
+│       ├── index.css           # Global styles and Tailwind imports
+│       ├── api/
+│       │   ├── axiosConfig.js  # Axios instance and auth interceptors
+│       │   └── portfolioService.js
+│       ├── components/
+│       │   ├── Navbar.jsx      # Navigation header
+│       │   ├── ProtectedRoute.jsx
+│       │   ├── editor/         # Tabbed form inputs
+│       │   │   ├── PersonalInfoForm.jsx
+│       │   │   ├── ExperienceForm.jsx
+│       │   │   ├── EducationForm.jsx
+│       │   │   ├── ProjectsForm.jsx
+│       │   │   ├── SkillsForm.jsx
+│       │   │   └── SettingsForm.jsx
+│       │   └── templates/      # Portfolio themes
+│       │       ├── ModernTemplate.jsx
+│       │       ├── MinimalTemplate.jsx
+│       │       └── CreativeTemplate.jsx
+│       ├── context/
+│       │   ├── AuthContext.jsx  # Authentication context
+│       │   └── ThemeContext.jsx # Theme context
+│       └── pages/
+│           ├── LandingPage.jsx
+│           ├── Login.jsx
+│           ├── Register.jsx
+│           ├── Dashboard.jsx
+│           ├── Editor.jsx
+│           └── PublicPortfolio.jsx
+│
+└── server/                     # Express API
+    ├── app.js                  # App configuration and middleware
+    ├── index.js                # Standalone entrypoint
+    ├── config/
+    │   └── db.js               # MongoDB database connection
+    ├── middleware/
+    │   └── authMiddleware.js   # JWT authentication parser
+    ├── models/
+    │   ├── User.js             # User data schema
+    │   └── Portfolio.js        # Portfolio data schema
+    └── routes/
+        ├── auth.js             # Authentication routes
+        └── portfolio.js        # Portfolio CRUD routes
+```
+
+***
+
+## Frontend Development
 
 ### Routing
 
-Defined in `client/src/App.jsx`:
+Client-side routes are defined in client/src/App.jsx:
 
 ```
-ThemeProvider → AuthProvider → BrowserRouter
-  ├── <Login />          (modal overlay — always mounted)
-  ├── <Register />       (modal overlay — always mounted)
-  └── <Routes>
-       ├── /                    → LandingPage
-       ├── /u/:username         → PublicPortfolio
-       ├── /dashboard           → Dashboard       (ProtectedRoute)
-       ├── /editor              → Editor           (ProtectedRoute)
-       └── *                    → Redirect to /
+ThemeProvider -> AuthProvider -> BrowserRouter
+  ├─ <Login />          (modal overlay)
+  ├─ <Register />       (modal overlay)
+  └─ <Routes>
+       ├─ /                    -> LandingPage
+       ├─ /u/:username         -> PublicPortfolio
+       ├─ /dashboard           -> Dashboard       (ProtectedRoute)
+       ├─ /editor              -> Editor           (ProtectedRoute)
+       └─ *                    -> Redirect to /
 ```
 
-**ProtectedRoute** — Wraps children; if `user` is null (from AuthContext), it redirects to `/` and opens the login modal.
-
-**Login / Register** are NOT routed pages. They render as fixed-position modal overlays controlled by `showLoginModal` and `showRegisterModal` state in `AuthContext`. This is why they are mounted above `<Routes>`.
+- **ProtectedRoute**: Validates if the user is authenticated. If no user session is detected, it redirects to the landing page and displays the login modal.
+- **Auth Modals**: Login and registration components are mounted globally and controlled via states in the authentication context.
 
 ### Context Providers
 
-#### AuthContext (`context/AuthContext.jsx`)
+#### AuthContext (client/src/context/AuthContext.jsx)
+Provides global state for user authentication.
 
-Provides global authentication state and methods.
+- `user` (Object | null): The current user profile, containing ID, name, email, username, and token.
+- `loading` (Boolean): Request state status.
+- `showLoginModal` (Boolean): Toggles the login modal visibility.
+- `showRegisterModal` (Boolean): Toggles the register modal visibility.
+- `login(email, password)`: Sends a request to login, saving the session data.
+- `register(name, email, password, username)`: Sends a request to register a new user.
+- `logout()`: Clears the local storage and state.
 
-| Property | Type | Description |
-|---|---|---|
-| `user` | `object \| null` | Current user object (includes `_id`, `name`, `email`, `username`, `token`) |
-| `loading` | `boolean` | True while an auth request is in-flight |
-| `showLoginModal` | `boolean` | Controls Login modal visibility |
-| `setShowLoginModal` | `function` | Toggle Login modal |
-| `showRegisterModal` | `boolean` | Controls Register modal visibility |
-| `setShowRegisterModal` | `function` | Toggle Register modal |
-| `login(email, password)` | `async function` | POST `/api/auth/login` — returns `{ success, message? }` |
-| `register(name, email, password, username)` | `async function` | POST `/api/auth/register` — returns `{ success, message? }` |
-| `logout()` | `function` | Clears user from state and localStorage |
+Sessions are persisted via localStorage under the user key.
 
-**Persistence:** On mount, `user` is restored from `localStorage.getItem('user')`. On login/register success, the full response (including JWT token) is stored.
+#### ThemeContext (client/src/context/ThemeContext.jsx)
+Manages application-wide dark and light themes.
 
-#### ThemeContext (`context/ThemeContext.jsx`)
+- `theme` ('dark' | 'light'): Current active theme.
+- `toggleTheme()`: Toggles between light and dark modes.
 
-Provides dark/light mode toggle.
-
-| Property | Type | Description |
-|---|---|---|
-| `theme` | `'dark' \| 'light'` | Current theme (default: `'dark'`) |
-| `toggleTheme()` | `function` | Switches between dark and light |
-
-**Mechanism:** Adds/removes `'dark'` class on `<html>` element (Tailwind CSS dark mode class strategy). Persisted in `localStorage` under key `app-theme`.
+Theme configuration is applied by adding or removing the dark class on the html element.
 
 ### API Layer
 
-#### Axios Instance (`api/axiosConfig.js`)
+#### Axios Configuration (client/src/api/axiosConfig.js)
+Sets the default configurations for API calls:
+- **Base URL**: Extracted from VITE_API_URL. In development, it defaults to an empty string to send requests to the unified dev server.
+- **Request Interceptor**: Checks localStorage for a valid user token and appends the Authorization header: `Bearer <token>`.
 
-- **Base URL:** Reads from `VITE_API_URL` env var. Falls back to empty string `''` in development (same-origin requests via the unified dev server).
-- **Content-Type:** `application/json`
-- **Auth Interceptor:** On every request, reads `user` from `localStorage`, extracts `token`, and attaches `Authorization: Bearer <token>` header.
-
-#### Portfolio Service (`api/portfolioService.js`)
-
-| Function | HTTP | Endpoint | Description |
-|---|---|---|---|
-| `getMyPortfolio()` | GET | `/api/portfolio/me` | Fetch current user's portfolio |
-| `upsertPortfolio(data)` | POST | `/api/portfolio` | Create or update portfolio |
-| `getPublicPortfolio(username)` | GET | `/api/portfolio/public/:username` | Fetch a user's public portfolio |
+#### Portfolio Service (client/src/api/portfolioService.js)
+Encapsulates HTTP endpoints for portfolio actions:
+- `getMyPortfolio()`: Fetches the authenticated user's portfolio data.
+- `upsertPortfolio(data)`: Updates or inserts new portfolio details.
+- `getPublicPortfolio(username)`: Fetches a portfolio using a public username.
 
 ### Pages
 
-#### LandingPage (`pages/LandingPage.jsx`)
-
-The marketing homepage for unauthenticated visitors.
-
-| Section | Description |
-|---|---|
-| **Navbar** | Shared navigation (logo, auth buttons, theme toggle) |
-| **Hero** | Animated headline "Build a Stunning Portfolio in Minutes", CTA button |
-| **Features Grid** | 3 cards: Real-time Editor, Designer Templates, Mobile Ready |
-| **Footer** | Copyright + BYP branding |
-
-- CTA "Start Building Now" → opens Register modal (or redirects to `/dashboard` if logged in)
-- Framer Motion entrance animations
-- `mesh-gradient` background styling
-
-#### Dashboard (`pages/Dashboard.jsx`)
-
-The authenticated user's home screen.
-
-| Section | Description |
-|---|---|
-| **Header** | Welcome text, "Edit Portfolio" / "Create Portfolio" button |
-| **Portfolio Card** | Shows public URL (`/u/username`), View link (new tab), Copy URL button |
-| **Empty State** | Shown when no portfolio exists yet |
-
-- Fetches portfolio via `getMyPortfolio()` on mount
-- Copy-to-clipboard with visual feedback (checkmark icon)
-
-#### Editor (`pages/Editor.jsx`)
-
-Full-screen tabbed portfolio editor with 5 tabs:
-
-| Tab | Form Component | Fields |
-|---|---|---|
-| Personal | `PersonalInfoForm` | Name, role, bio, email, location + skill cards |
-| Experience | `ExperienceForm` | Company, position, location, start/end date, description |
-| Education | `EducationForm` | Institution, degree, field of study, start/end year, description |
-| Projects | `ProjectsForm` | Title, description, tech stack (comma-separated), GitHub link, live link |
-| Settings | `SettingsForm` | Template selector, theme toggle, public/private switch, social links |
-
-**Default portfolio state** (when creating from scratch):
-
-```js
-{
-  personalInfo: { name: '', bio: '', role: '', profilePhoto: '', email: '', phone: '', location: '' },
-  education: [],
-  skills: [],
-  projects: [],
-  experience: [],
-  certifications: [],
-  socialLinks: { github: '', linkedin: '', twitter: '', portfolio: '' },
-  settings: { theme: 'light', isPublic: true },
-  templateId: 'modern'
-}
-```
-
-**Save flow:** Calls `upsertPortfolio(portfolioData)` → POST `/api/portfolio` → shows success toast.
-
-#### PublicPortfolio (`pages/PublicPortfolio.jsx`)
-
-Renders a user's portfolio at `/u/:username`.
-
-**Flow:**
-1. Extracts `username` from URL params
-2. Fetches portfolio via `getPublicPortfolio(username)`
-3. Reads `templateId` from the portfolio data
-4. Renders the corresponding template component
-
-**Template routing:**
-
-| `templateId` | Component |
-|---|---|
-| `'modern'` (default) | `ModernTemplate` |
-| `'minimal'` | `MinimalTemplate` |
-| `'creative'` | `CreativeTemplate` |
-
-**404 State:** Large "404" background text, "Portfolio Not Found" heading, "Create Yours" CTA link to `/`.
-
-#### Login (`pages/Login.jsx`)
-
-Modal overlay (not a route) controlled by `showLoginModal` from AuthContext.
-
-- Fields: Email, Password (with lucide icons)
-- Backdrop blur + click-to-close
-- Close on Escape key
-- Error display (red alert)
-- Link to switch to Register modal
-- On success: closes modal, navigates to `/dashboard`
-
-#### Register (`pages/Register.jsx`)
-
-Modal overlay controlled by `showRegisterModal`.
-
-- Fields: Full Name, Username, Email, Password, Confirm Password
-- Client-side password match validation
-- Link to switch to Login modal
-- On success: closes modal, navigates to `/dashboard`
+- **LandingPage**: The entry page featuring product features, visual screenshots, and calls to action.
+- **Dashboard**: The main control board showing portfolio status, options to edit, and a link copying utility.
+- **Editor**: A five-tab configuration form containing fields for Personal info, Experience, Education, Projects, and Theme Settings.
+- **PublicPortfolio**: Page resolving under /u/:username that dynamically loads the appropriate visual template.
 
 ### Components
 
-#### Navbar (`components/Navbar.jsx`)
-
-Renders differently based on auth state:
-
-| State | Elements |
-|---|---|
-| **Logged out** | BYP logo, Features link, theme toggle (Sun/Moon), Login button, "Get Started" CTA |
-| **Logged in** | BYP logo, theme toggle, user avatar (initial circle) + name, Logout button |
-
-#### ProtectedRoute (`components/ProtectedRoute.jsx`)
-
-Wrapper component. If `user` is null → redirects to `/` and triggers `setShowLoginModal(true)`.
-
-#### Editor Forms (`components/editor/`)
-
-| Component | Purpose |
-|---|---|
-| `PersonalInfoForm` | Two-column: personal info fields (left) + skill cards (right) |
-| `ExperienceForm` | CRUD list of work experiences with expandable cards |
-| `EducationForm` | CRUD list of education entries |
-| `ProjectsForm` | CRUD list of projects with tech stack tags |
-| `SkillsForm` | Standalone skill management (used within PersonalInfoForm) |
-| `SettingsForm` | Two-column: portfolio settings (left) + social links (right) |
-
-**Skill level pills** in PersonalInfoForm:
-
-| Level | Color |
-|---|---|
-| Beginner | Emerald |
-| Intermediate | Sky |
-| Advanced | Amber |
-| Expert | Rose |
-
-**Template selector** in SettingsForm — 3 visual cards:
-
-| Template | Icon | Gradient | Description |
-|---|---|---|---|
-| Modern | Layout | Indigo → Blue | Clean & professional |
-| Minimal | Minus | Slate | Simple & elegant |
-| Creative | Sparkles | Pink → Purple | Bold & expressive |
+- **Navbar**: Standard navigation bar which renders buttons dynamically depending on auth status.
+- **ProtectedRoute**: Custom guard component preventing unauthenticated views.
+- **Editor Forms**: Components managing forms for each category (e.g. ExperienceForm, SkillsForm).
 
 ### Templates
 
-All templates receive the full portfolio data as props and render a complete, standalone portfolio page.
-
-#### ModernTemplate (`templates/ModernTemplate.jsx`)
-
-- **Layout:** Two-column — sticky left sidebar (400px) + scrollable right content
-- **Sidebar:** Name (uppercase), role badge, email, location, bio, quick stats (project/skill/experience counts), social links
-- **Content:** Experience section → Featured Works (projects) → Skills & Education side-by-side
-- **Styling:** Decorative blurred gradient orbs (indigo/purple), `glass-card` effects, `font-outfit`, Framer Motion stagger animations, `rounded-[2rem]` cards
-
-#### MinimalTemplate (`templates/MinimalTemplate.jsx`)
-
-- **Layout:** 12-column bento grid
-- **Grid cells:**
-  - Profile hero (col-span-8): Name, role, bio
-  - Contact card (col-span-4): Email, location, socials
-  - Skills (col-span-5): Hover-to-highlight pills
-  - Experience timeline (col-span-7): Left-border timeline, scrollable
-  - Projects (col-span-12): 3-column grid with numbered overlays (01, 02…)
-  - Education (col-span-12): Two-column layout
-- **Styling:** Uppercase italic typography, `rounded-[2.5rem]`, subtle blur decorations, hover-to-reveal action buttons
-
-#### CreativeTemplate (`templates/CreativeTemplate.jsx`)
-
-- **Layout:** Single column, full-width, cinematic sections
-- **Sections:**
-  - Header: First name + period (e.g., "JOHN."), social icons
-  - Hero: Massive text `text-[10rem]` — "CREATIVE" gradient + full name, bio in quotes
-  - Skills: "TECH SPECTRUM" — large 96px skill cards, hover rotate/scale
-  - Experience + Projects: Two-column split with generous whitespace (`gap-40`, `py-40`)
-  - Footer CTA: "LET'S WORK TOGETHER." at 10rem, mailto button
-- **Styling:** Animated pulsing gradient orbs with `mix-blend-screen`, grid overlay pattern, extreme whitespace, `gradient-text` utility
+Templates receive the portfolio data object and render a customized UI:
+- **ModernTemplate**: Sticky sidebar layout with dual columns and soft neon backgrounds.
+- **MinimalTemplate**: Grid layout featuring uppercase typography and clean borders.
+- **CreativeTemplate**: Spacious layouts, large scale text, and dramatic hover rotations.
 
 ### Styling
+- **Tailwind CSS**: Built using Tailwind CSS version 4.
+- **Custom Classes**: Defined in client/src/index.css, including mesh-gradient, glass-card, and gradient-text utilities.
+- **Animations**: Created using Framer Motion for clean page loading and button interactions.
 
-- **Framework:** Tailwind CSS v4 with `@tailwindcss/vite` plugin
-- **Dark mode:** Class strategy (`dark:` variants), toggled by ThemeContext
-- **Font:** Outfit (applied via `font-outfit` class)
-- **Custom utilities** (defined in `index.css`):
-  - `mesh-gradient` / `mesh-gradient-dark` / `mesh-gradient-light` — background mesh patterns
-  - `glass-card` / `glass-card-dark` — frosted glass card effects
-  - `gradient-text` — colorful gradient text
-  - `custom-scrollbar` — styled scrollbars
-- **Rounded corners:** Consistently large radii (`rounded-[2rem]`, `rounded-[2.5rem]`, `rounded-[3rem]`)
-- **Animations:** Framer Motion for page transitions, card entrances, stagger effects, and hover interactions
+***
 
----
+## Backend Development
 
-## Backend (Server)
-
-**Stack:** Node.js · Express 5 · Mongoose 9 · JWT · bcryptjs
-
-### Express App (`server/app.js`)
-
-```
-Express App
-├── Middleware
-│   ├── express.json()          # Parse JSON bodies
-│   └── cors()                  # Allow all origins, credentials, GET/POST/PUT/DELETE
-│
-└── Routes
-    ├── /api/auth/*             # → routes/auth.js
-    └── /api/portfolio/*        # → routes/portfolio.js
-```
-
-- `.env` is loaded relative to the `server/` directory
-- `connectDB()` is called on import (connects to MongoDB)
-- The app is exported as a module (used by `dev-server.js` and the Vercel adapter)
+### Express App (server/app.js)
+Sets up Express server configurations, registers routing systems, and establishes connection with the MongoDB database.
 
 ### Database Models
 
-#### User Model (`models/User.js`)
+#### User Model (server/models/User.js)
+Defines structure for system accounts:
+- `name` (String, Required)
+- `email` (String, Required, Unique)
+- `password` (String, Required, Hashed)
+- `username` (String, Required, Unique)
+- `isPremium` (Boolean, Default: false)
 
-| Field | Type | Constraints |
-|---|---|---|
-| `name` | String | Required |
-| `email` | String | Required, Unique |
-| `password` | String | Required (hashed) |
-| `username` | String | Required, Unique |
-| `isPremium` | Boolean | Default: `false` |
-| `createdAt` | Date | Auto (timestamps) |
-| `updatedAt` | Date | Auto (timestamps) |
+Password encryption is managed automatically using a pre-save Mongoose hook.
 
-**Hooks:**
-- `pre('save')` — Hashes password with bcrypt (salt rounds: 10) if the `password` field is modified
-
-**Instance methods:**
-- `matchPassword(enteredPassword)` — Compares plain text against the stored hash using `bcrypt.compare()`
-
-#### Portfolio Model (`models/Portfolio.js`)
-
-| Field | Type | Default |
-|---|---|---|
-| `userId` | ObjectId (ref: User) | Required |
-| `templateId` | String | `'modern'` |
-| `personalInfo` | Embedded object | — |
-| `personalInfo.name` | String | — |
-| `personalInfo.bio` | String | — |
-| `personalInfo.role` | String | — |
-| `personalInfo.profilePhoto` | String | — |
-| `personalInfo.email` | String | — |
-| `personalInfo.phone` | String | — |
-| `personalInfo.location` | String | — |
-| `education[]` | Array of objects | `[]` |
-| `education[].institution` | String | — |
-| `education[].degree` | String | — |
-| `education[].fieldOfStudy` | String | — |
-| `education[].startYear` | String | — |
-| `education[].endYear` | String | — |
-| `education[].description` | String | — |
-| `skills[]` | Array of objects | `[]` |
-| `skills[].name` | String | — |
-| `skills[].level` | Enum: `Beginner`, `Intermediate`, `Advanced`, `Expert` | `'Beginner'` |
-| `projects[]` | Array of objects | `[]` |
-| `projects[].title` | String | — |
-| `projects[].description` | String | — |
-| `projects[].techStack` | [String] | — |
-| `projects[].githubLink` | String | — |
-| `projects[].liveLink` | String | — |
-| `projects[].image` | String | — |
-| `experience[]` | Array of objects | `[]` |
-| `experience[].company` | String | — |
-| `experience[].position` | String | — |
-| `experience[].location` | String | — |
-| `experience[].startDate` | String | — |
-| `experience[].endDate` | String | — |
-| `experience[].description` | String | — |
-| `certifications[]` | Array of objects | `[]` |
-| `certifications[].name` | String | — |
-| `certifications[].issuer` | String | — |
-| `certifications[].date` | String | — |
-| `certifications[].link` | String | — |
-| `socialLinks` | Embedded object | — |
-| `socialLinks.github` | String | — |
-| `socialLinks.linkedin` | String | — |
-| `socialLinks.twitter` | String | — |
-| `socialLinks.portfolio` | String | — |
-| `settings.theme` | Enum: `light`, `dark` | `'light'` |
-| `settings.isPublic` | Boolean | `true` |
-| `createdAt` | Date | Auto |
-| `updatedAt` | Date | Auto |
+#### Portfolio Model (server/models/Portfolio.js)
+Defines structure for portfolio records:
+- `userId` (Mongoose ObjectId, Required)
+- `templateId` (String, Default: 'modern')
+- `personalInfo` (Object containing name, bio, role, profilePhoto, email, phone, location)
+- `education` (Array of objects containing institution, degree, fieldOfStudy, startYear, endYear, description)
+- `skills` (Array of objects containing name, level)
+- `projects` (Array of objects containing title, description, techStack, githubLink, liveLink, image)
+- `experience` (Array of objects containing company, position, location, startDate, endDate, description)
+- `socialLinks` (Object containing github, linkedin, twitter, portfolio)
+- `settings` (Object containing theme, isPublic)
 
 ### API Routes
 
-#### Auth Routes (`routes/auth.js`)
+#### Authentication (server/routes/auth.js)
+- `POST /api/auth/register`: Checks constraints and creates a new user profile.
+- `POST /api/auth/login`: Validates password credentials and returns a JWT.
 
-##### POST `/api/auth/register`
-
-Register a new user.
-
-**Request body:**
-```json
-{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "securepassword",
-  "username": "johndoe"
-}
-```
-
-**Validation:**
-- Checks if `email` already exists → 400 "User already exists"
-- Checks if `username` already exists → 400 "Username already taken"
-
-**Success response (201):**
-```json
-{
-  "_id": "64a...",
-  "name": "John Doe",
-  "email": "john@example.com",
-  "username": "johndoe",
-  "token": "eyJhbGciOiJIUzI1NiIs..."
-}
-```
-
-##### POST `/api/auth/login`
-
-Authenticate an existing user.
-
-**Request body:**
-```json
-{
-  "email": "john@example.com",
-  "password": "securepassword"
-}
-```
-
-**Success response (200):** Same shape as register response.
-
-**Failure (401):** `{ "message": "Invalid email or password" }`
-
-**JWT:** Signed with `JWT_SECRET`, expires in **30 days**.
-
----
-
-#### Portfolio Routes (`routes/portfolio.js`)
-
-##### GET `/api/portfolio/me` (Protected)
-
-Returns the authenticated user's portfolio document.
-
-- **Auth:** Requires `Authorization: Bearer <token>` header
-- **404:** `{ "message": "Portfolio not found" }` if no portfolio exists
-- **200:** Full portfolio document
-
-##### POST `/api/portfolio` (Protected)
-
-Creates or updates the user's portfolio (upsert pattern).
-
-**Request body:** Full or partial portfolio object:
-```json
-{
-  "templateId": "modern",
-  "personalInfo": { "name": "John", "role": "Developer", ... },
-  "education": [...],
-  "skills": [...],
-  "projects": [...],
-  "experience": [...],
-  "certifications": [...],
-  "socialLinks": { "github": "https://github.com/johndoe", ... },
-  "settings": { "theme": "dark", "isPublic": true }
-}
-```
-
-**Logic:**
-- If portfolio exists for the user → updates only the fields provided (keeps existing values for omitted fields)
-- If no portfolio exists → creates a new document
-
-**201** (created) or **200** (updated): Full portfolio document.
-
-##### GET `/api/portfolio/public/:username` (Public)
-
-Fetches a user's portfolio by username for public viewing.
-
-**Logic:**
-1. Finds user by `username`
-2. Finds portfolio by `userId`
-3. Checks `settings.isPublic === true`
-4. Returns user info + portfolio
-
-**Success response (200):**
-```json
-{
-  "user": {
-    "name": "John Doe",
-    "username": "johndoe"
-  },
-  "portfolio": { ... }
-}
-```
-
-**404:** `{ "message": "Portfolio is private or not found" }`
+#### Portfolio (server/routes/portfolio.js)
+- `GET /api/portfolio/me`: Returns the logged-in user's portfolio.
+- `POST /api/portfolio`: Updates or inserts new portfolio sections.
+- `GET /api/portfolio/public/:username`: Returns public portfolio details.
 
 ### Authentication Middleware
+The protect middleware verified in server/middleware/authMiddleware.js extracts the Bearer token from the incoming request authorization headers and validates it using the JSON Web Token secret.
 
-#### `protect` middleware (`middleware/authMiddleware.js`)
+***
 
-Applied to private routes.
+## Developer Workflow and Conventions
 
-**Flow:**
-1. Reads `Authorization` header
-2. Extracts Bearer token
-3. Verifies token with `jwt.verify(token, JWT_SECRET)`
-4. Fetches user from DB by decoded `id` (excludes password)
-5. Attaches user to `req.user`
-6. Calls `next()`
+### Branching Strategy
+Create branches from the main branch using the format: `type/short-description` (e.g. `feature/pdf-export` or `fix/auth-redirect`).
 
-**Errors:**
-- No token → 401 "Not authorized, no token"
-- Invalid/expired token → 401 "Not authorized, token failed"
+### Commit Messages
+Follow conventional commit specifications: `<type>(<scope>): <description>` (e.g. `feat(editor): add skills tab` or `fix(api): fix validation`).
 
----
+### Code Style
+- Use two-space indentation.
+- Use single quotes for Javascript strings.
+- Implement functional components in React.
+- Use async and await with try-catch blocks in route handlers.
+
+***
+
+## Step-by-Step Development Instructions
+
+### Adding a New Template
+
+1. **Create the component file**: Create `client/src/components/templates/YourTemplate.jsx`. Accept `portfolio` and `user` as props.
+2. **Design the UI**: Develop the structure using Tailwind CSS and Framer Motion. Support light and dark theme toggles using settings.theme.
+3. **Register the template**: Add the template key to the templates object in `client/src/pages/PublicPortfolio.jsx`.
+4. **Update the settings form**: Register your template card inside `client/src/components/editor/SettingsForm.jsx`.
+
+### Adding a New Editor Tab
+
+1. **Create the input form component**: Create a custom form in `client/src/components/editor/YourForm.jsx`.
+2. **Add tab configuration**: Register the new tab in `client/src/pages/Editor.jsx`. Add the corresponding CRUD handler logic.
+3. **Extend the database model**: Update the portfolio schema in `server/models/Portfolio.js` to match the new structure.
+
+### Adding a New API Endpoint
+
+1. **Define routes**: Add the new route endpoint inside the route files under `server/routes/`.
+2. **Implement service calls**: Add a corresponding async helper in `client/src/api/portfolioService.js`.
+3. **Verify backend functionality**: Validate that the endpoint correctly processes requests.
+
+### Testing Your Changes
+Before finalizing changes, verify:
+- The backend and frontend execute without errors when starting the dev server.
+- Database changes persist securely to MongoDB.
+- UI elements remain responsive on mobile, tablet, and desktop views.
+- ESLint checks pass with no errors.
+
+***
 
 ## Deployment
 
-### Vercel Configuration (`vercel.json`)
+Deployments are configured for Vercel using vercel.json. API requests are routed to the catch-all API handler, while frontend routes are routed back to the index.html page to support client-side SPA routing.
 
-```json
-{
-  "buildCommand": "npm run build",
-  "outputDirectory": "client/dist",
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/[[...all]]" },
-    { "source": "/(.*)", "destination": "/index.html" }
-  ]
-}
-```
-
-**How it works:**
-- `npm run build` builds the Vite client into `client/dist/`
-- All `/api/*` requests are routed to the catch-all serverless function at `api/[[...all]].js`
-- All other requests get the SPA's `index.html` (client-side routing)
-
-### Serverless Adapter (`api/[[...all]].js`)
-
-```js
-const app = require('../server/app');
-module.exports = app;
-```
-
-Wraps the full Express app as a Vercel serverless function. Every API request gets handled by the same Express middleware and routes.
-
----
+***
 
 ## Environment Variables
 
-### Server (`server/.env`)
+- `MONGO_URI`: Connection endpoint for the MongoDB instance.
+- `JWT_SECRET`: Private signature key used for web tokens.
+- `VITE_API_URL`: Root path of the production API.
 
-| Variable | Required | Description |
-|---|---|---|
-| `MONGO_URI` | ✅ | MongoDB connection string |
-| `JWT_SECRET` | ✅ | Secret key for signing JWTs |
-| `PORT` | ❌ | Server port (default: `5000` standalone, `5173` unified) |
-| `CLOUDINARY_CLOUD_NAME` | ❌ | Cloudinary cloud name (for future image upload) |
-| `CLOUDINARY_API_KEY` | ❌ | Cloudinary API key |
-| `CLOUDINARY_API_SECRET` | ❌ | Cloudinary API secret |
-
-### Client (`client/.env`)
-
-| Variable | Required | Description |
-|---|---|---|
-| `VITE_API_URL` | ❌ | API base URL. Empty in dev (same-origin). Set for production. |
-
----
+***
 
 ## Data Flow Diagrams
 
 ### Registration Flow
-
 ```
 User fills Register form
   │
   ▼
-AuthContext.register(name, email, password, username)
+AuthContext.register()
   │
   ▼
 POST /api/auth/register
   │
-  ├── Check email uniqueness
-  ├── Check username uniqueness
-  ├── User.create() → bcrypt hashes password on pre-save
-  └── Return { user, token }
+  ├─ Verify constraints
+  ├─ User.create() (Hashes password on pre-save)
+  └─ Return user profile and token
   │
   ▼
-Store user+token in localStorage
+Save session to local storage
   │
   ▼
 Redirect to /dashboard
 ```
 
 ### Portfolio Save Flow
-
 ```
-User edits portfolio in Editor
+User edits portfolio data
   │
   ▼
-Click "Save" button
+Click Save button
   │
   ▼
-portfolioService.upsertPortfolio(portfolioData)
+portfolioService.upsertPortfolio()
   │
   ▼
-Axios interceptor attaches Bearer token
+Request interceptor appends Bearer Token
   │
   ▼
-POST /api/portfolio  (protect middleware verifies JWT)
+POST /api/portfolio (protect middleware runs validation)
   │
-  ├── Portfolio exists? → Update fields
-  └── No portfolio? → Create new document
-  │
-  ▼
-Return saved portfolio document
+  ├─ Check if portfolio exists
+  └─ Save data to database
   │
   ▼
-Show success toast in Editor
-```
-
-### Public Portfolio View Flow
-
-```
-Visitor navigates to /u/johndoe
+Return portfolio details
   │
   ▼
-PublicPortfolio extracts :username from URL
-  │
-  ▼
-portfolioService.getPublicPortfolio('johndoe')
-  │
-  ▼
-GET /api/portfolio/public/johndoe
-  │
-  ├── Find user by username
-  ├── Find portfolio by userId
-  ├── Check settings.isPublic === true
-  └── Return { user, portfolio }
-  │
-  ▼
-Read portfolio.templateId → select template component
-  │
-  ├── 'modern'   → <ModernTemplate />
-  ├── 'minimal'  → <MinimalTemplate />
-  └── 'creative' → <CreativeTemplate />
-  │
-  ▼
-Render full portfolio page
+Display toast alert
 ```
 
----
+***
 
 ## Error Handling
 
-### Backend
+Server operations wrap code blocks in try-catch handlers. Standard endpoints respond with status code 400 for bad input data, 401 for unauthorized calls, 404 for missing entities, and 500 for general server exceptions.
 
-All route handlers use `try/catch` blocks:
-
-```js
-try {
-  // ... logic
-} catch (error) {
-  res.status(500).json({ message: error.message });
-}
-```
-
-**Specific error codes:**
-| Status | When |
-|---|---|
-| 400 | Duplicate email, duplicate username, invalid data |
-| 401 | Missing token, invalid token, wrong credentials |
-| 404 | Portfolio not found, user not found, private portfolio |
-| 500 | Server error, database error |
-
-### Frontend
-
-- Auth context methods return `{ success: boolean, message?: string }` for the UI to handle
-- Axios interceptor rejects on error — components catch and display error messages
-- 404 pages show custom "Not Found" states with CTAs
-
----
+***
 
 ## Security
 
-| Measure | Implementation |
-|---|---|
-| **Password hashing** | bcryptjs with 10 salt rounds, hashed on pre-save hook |
-| **JWT authentication** | 30-day expiry, stored in localStorage, sent as Bearer token |
-| **Protected routes** | Server: `protect` middleware on private endpoints. Client: `ProtectedRoute` component |
-| **Input validation** | Mongoose schema validation (enums, required fields) |
-| **CORS** | Configured to allow all origins with credentials (configurable) |
-| **Privacy** | Portfolio `isPublic` flag checked server-side before returning data |
-
-### Known Considerations
-
-- **localStorage for tokens** — Vulnerable to XSS. Consider httpOnly cookies for production.
-- **CORS origin: true** — Open to all origins. Restrict in production.
-- **No rate limiting** — Consider adding `express-rate-limit` for auth endpoints.
-- **No input sanitization** — Consider adding `express-mongo-sanitize` or `xss-clean`.
+- Password database entries are securely hashed using bcryptjs.
+- Route endpoints are protected using verified JSON Web Tokens.
+- Access permissions check the privacy configuration flag on each request before returning portfolio data.
