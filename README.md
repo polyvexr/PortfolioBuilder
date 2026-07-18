@@ -1,12 +1,12 @@
-# 🎓 Build Your Portfolio — No-Code Portfolio Builder for Students
+# Build Your Portfolio — No-Code Portfolio Builder for Students
 
 A modern, full-stack **MERN** application that enables students to create professional portfolio websites without writing a single line of code. Fill in your details, pick a template, and instantly get a shareable public portfolio URL.
 
-> **Live Demo →** _`https://your-vercel-url.vercel.app`_ _(replace with your deployment URL)_
+> **Live Demo →** `https://build-your-portfolio-iota.vercel.app`
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
 ### Pages
 
@@ -23,16 +23,16 @@ A modern, full-stack **MERN** application that enables students to create profes
 
 ---
 
-## ✨ Features
+##  Features
 
-### 🔐 Authentication
+### Authentication
 - Email / Password registration and login
 - JWT-based authentication (30-day token expiry)
 - Modal-based auth UI with backdrop blur and keyboard shortcuts
 - Protected routes for Dashboard and Editor
 - Persistent sessions via localStorage
 
-### 📝 Portfolio Builder (5-Tab Editor)
+### Portfolio Builder (5-Tab Editor)
 | Tab | Contents |
 |---|---|
 | **Personal** | Name, role, bio, email, location + skills with proficiency levels |
@@ -41,25 +41,25 @@ A modern, full-stack **MERN** application that enables students to create profes
 | **Projects** | Title, description, tech stack tags, GitHub & live links |
 | **Settings** | Template selector, theme toggle (light/dark), public/private switch, social links |
 
-### 🎨 Live Editor
+### Live Editor
 - Real-time tabbed editing with Framer Motion transitions
 - Full CRUD for every section (add / edit / delete)
 - Save with loading state and success toast
 - Instant navigation back to Dashboard
 
-### 🌐 Public Portfolio
+### Public Portfolio
 - Shareable via `/u/username` URL
 - Dynamically renders the chosen template (Modern, Minimal, or Creative)
 - Responsive across all screen sizes
 - Custom 404 state with "Create Yours" CTA
 
-### 📊 Dashboard
+### Dashboard
 - Portfolio status overview
 - One-click "Copy Link" with clipboard feedback
 - Quick access to Editor (create or edit)
 - Loading skeleton with spinner
 
-### 🌙 Theming
+### Theming
 - Global dark / light mode toggle (persisted in localStorage)
 - Tailwind CSS `dark:` class strategy
 - Dark mode by default
@@ -67,7 +67,7 @@ A modern, full-stack **MERN** application that enables students to create profes
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Frontend
 | Technology | Version | Purpose |
@@ -100,7 +100,7 @@ A modern, full-stack **MERN** application that enables students to create profes
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - **Node.js** v16+
@@ -143,7 +143,7 @@ A modern, full-stack **MERN** application that enables students to create profes
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 builder-your-portfolio/
@@ -206,7 +206,7 @@ builder-your-portfolio/
 
 ---
 
-## 🔑 API Endpoints
+## API Endpoints
 
 ### Authentication
 | Method | Endpoint | Access | Description |
@@ -223,7 +223,7 @@ builder-your-portfolio/
 
 ---
 
-## 🎯 Usage Guide
+## Usage Guide
 
 1. **Register** — Click "Get Started" on the landing page to create an account
 2. **Login** — Sign in with your email and password
@@ -240,7 +240,7 @@ builder-your-portfolio/
 
 ---
 
-## 🔮 Roadmap
+## Roadmap
 
 - [ ] Image upload integration with Cloudinary
 - [ ] QR code generation for portfolio URL
@@ -253,7 +253,7 @@ builder-your-portfolio/
 - [ ] Email verification
 - [ ] Password reset functionality
 
-## � Documentation
+## Documentation
 
 See [DOCUMENTATION.md](DOCUMENTATION.md) for full technical documentation including:
 - Architecture overview & data flow diagrams
@@ -262,7 +262,7 @@ See [DOCUMENTATION.md](DOCUMENTATION.md) for full technical documentation includ
 - Deployment configuration (Vercel)
 - Security considerations
 
-## 🤝 Contributing
+## Contributing
 
 Contributions, issues, and feature requests are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for:
 - Development setup guide
@@ -271,14 +271,6 @@ Contributions, issues, and feature requests are welcome! See [CONTRIBUTING.md](C
 - PR checklist and submission process
 - Good first issues and roadmap
 
-## 📄 License
+## License
 
 This project is open source and available for educational purposes.
-
-## 👨‍💻 Author
-
-Built with ❤️ for students by students
-
----
-
-**Made with build your portfolio** ✨
