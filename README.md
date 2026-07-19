@@ -113,3 +113,9 @@ Planned features and enhancements:
 ## License
 
 This project is open source and available for educational purposes.
+
+***
+
+## Contributions
+
+Contributions are welcome. Please fork the repository and submit a pull request with your changes.
